@@ -1,0 +1,29 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-kontroll-access-management-catalog
+  labels:
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/name: fint-kontroll-access-management-catalog
+    app.kubernetes.io/instance: fint-kontroll-access-management-catalog_fintlabs-no
+spec:
+  #  port: 8080
+  orgId: fintlabs.no
+  image: ghcr.io/fintlabs/fint-kontroll-access-management-catalog:latest
+  imagePullPolicy: Always
+  url:
+    hostname: 'kontroll.vigoiks.no'
+    basePath: '/beta/fintlabs-no'
+  ingress:
+    enabled: true
+    basePath: '/beta/fintlabs-no/api/access-management-catalog'
+    middlewares:
+      - fint-kontroll-sso
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: JAVA_TOOL_OPTIONS
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx480M -verbose:gc'
+  envFrom:
+    - configMapRef:
+        name: fint-kontroll-access-management-config
