@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-public class RoleRepositoryTest {
+public class AccessRoleRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

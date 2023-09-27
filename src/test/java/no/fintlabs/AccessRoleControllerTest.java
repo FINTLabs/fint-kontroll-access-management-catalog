@@ -13,15 +13,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest
 @Import({SecurityConfig.class})
-public class RoleControllerTest {
+public class AccessRoleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @WithMockUser(value = "spring")
     @Test
-    public void shouldGetRoles() throws Exception {
-        mockMvc.perform(get("/api/accessmanagement/v1/role"))
+    public void shouldGetAccessRoles() throws Exception {
+        mockMvc.perform(get("/api/accessmanagement/v1/accessrole"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().json("['APPLIKASJONSTILGANGSADMINISTRATOR', 'APPLIKASJONSADMINISTRATOR', 'ENHETSLEDER', 'SLUTTBRUKER']"));

@@ -11,12 +11,12 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/accessmanagement/v1/role")
-public class RoleController {
+@RequestMapping("/api/accessmanagement/v1/accessrole")
+public class AccessRoleController {
 
     @ApiResponse(description = "Hent alle tilgjengelige roller")
     @GetMapping
-    public ResponseEntity<List<String>> getRoles() {
+    public ResponseEntity<List<String>> getAccessRoles() {
         return ResponseEntity.ok(List.of("APPLIKASJONSTILGANGSADMINISTRATOR", "APPLIKASJONSADMINISTRATOR", "ENHETSLEDER", "SLUTTBRUKER"));
     }
 }
