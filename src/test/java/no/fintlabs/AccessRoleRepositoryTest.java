@@ -1,5 +1,7 @@
 package no.fintlabs;
 
+import no.fintlabs.accessrole.AccessRole;
+import no.fintlabs.accessrole.AccessRoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,10 +18,21 @@ public class AccessRoleRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private AccessRoleRepository accessRoleRepository;
+
     @Test
     public void test() {
-        List<Object> objects = jdbcTemplate.query("select id, accessrole_id, name from accessrole", new BeanPropertyRowMapper<>(Object.class));
+        List<Object> objects = jdbcTemplate.query("select id, access_role_id, name from accessrole", new BeanPropertyRowMapper<>(Object.class));
         assertNotNull(objects);
         assertThat(objects).hasSize(4);
+    }
+
+    @Test
+    public void shouldGetAccessRoles() {
+        List<AccessRole> all = accessRoleRepository.findAll();
+        assertThat(all).hasSize(4);
+        assertThat(all.get(0).getAccessRoleId()).isEqualTo("ata");
+        assertThat(all.get(0).getName()).isEqualTo("applikasjonstilgangsadministrator");
     }
 }
