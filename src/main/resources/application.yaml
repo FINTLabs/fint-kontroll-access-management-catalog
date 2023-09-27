@@ -8,3 +8,8 @@ spring:
   profiles:
     include:
       - db
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
