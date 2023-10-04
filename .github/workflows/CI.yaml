@@ -23,8 +23,19 @@ jobs:
 
     services:
       docker:
-        image: docker:dind
-        options: --privileged
+        image: docker:20.10-dind
+        env:
+          DOCKER_DRIVER: overlay
+          DOCKER_TLS_CERTDIR: ''
+        options: >-
+          --privileged
+          --ipc=host
+          -v /var/run/docker.sock:/var/run/docker.sock
+          -v /tmp:/tmp
+    env:
+      DOCKER_HOST: tcp://docker:2375
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
 
     steps:
       - name: Checkout repository
