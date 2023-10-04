@@ -20,6 +20,15 @@ jobs:
       packages: write
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
+
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+
+    env:
+      DOCKER_HOST: tcp://localhost:2375
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
