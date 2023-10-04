@@ -36,7 +36,7 @@ jobs:
     steps:
       # Setup docker environment on the runner
       - name: Set up Docker
-        uses: docker-practice/actions-setup-docker@latest
+        uses: docker-practice/actions-setup-docker@master
         with:
           docker_version: 20.10
           docker_buildx: false
