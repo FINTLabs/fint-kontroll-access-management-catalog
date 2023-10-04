@@ -2,6 +2,7 @@ logging:
   level:
     org.flywaydb.core.internal.command.DbMigrate: DEBUG
     org.springframework.security: DEBUG
+    org.testcontainers: DEBUG
 
 spring:
   datasource:
