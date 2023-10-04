@@ -25,19 +25,22 @@ jobs:
       docker:
         image: docker:20.10-dind
         env:
-          DOCKER_DRIVER: overlay
+          DOCKER_DRIVER: overlay2
           DOCKER_TLS_CERTDIR: ''
         options: >-
           --privileged
           --ipc=host
           -v /var/run/docker.sock:/var/run/docker.sock
           -v /tmp:/tmp
-    env:
-      DOCKER_HOST: tcp://docker:2375
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
 
     steps:
+      # Setup docker environment on the runner
+      - name: Set up Docker
+        uses: docker-practice/actions-setup-docker@latest
+        with:
+          docker_version: 20.10
+          docker_buildx: false
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
