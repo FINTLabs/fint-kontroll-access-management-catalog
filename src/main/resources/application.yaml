@@ -1,3 +1,10 @@
+fint:
+  org-id: fintlabs.no
+  application-id: fint-kontroll-access-management-catalog
+  cache:
+      defaultCacheEntryTimeToLiveMillis: 518400000
+      defaultCacheHeapSize: 1000000
+
 spring:
   security:
     oauth2:
@@ -8,6 +15,7 @@ spring:
   profiles:
     include:
       - db
+      - kafka
 
 springdoc:
   swagger-ui:

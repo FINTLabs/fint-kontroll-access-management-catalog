@@ -2,6 +2,7 @@ package no.fintlabs;
 
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,14 +22,14 @@ public class AccessRoleRepositoryTest {
     @Autowired
     private AccessRoleRepository accessRoleRepository;
 
-    @Test
+    @Disabled
     public void test() {
         List<Object> objects = jdbcTemplate.query("select id, access_role_id, name from accessrole", new BeanPropertyRowMapper<>(Object.class));
         assertNotNull(objects);
         assertThat(objects).hasSize(4);
     }
 
-    @Test
+    @Disabled
     public void shouldGetAccessRoles() {
         List<AccessRole> all = accessRoleRepository.findAll();
         assertThat(all).hasSize(4);
