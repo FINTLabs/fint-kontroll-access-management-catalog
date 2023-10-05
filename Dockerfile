@@ -1,9 +1,12 @@
-FROM gradle:7.5-jdk17 as builder
-USER root
-COPY . .
-RUN gradle --no-daemon build
-
 FROM gcr.io/distroless/java17
 ENV JAVA_TOOL_OPTIONS -XX:+ExitOnOutOfMemoryError
-COPY --from=builder /home/gradle/build/libs/fint-kontroll-access-management-catalog-*.jar /data/app.jar
-CMD ["/data/app.jar"]
+ENV APPNAME=fint-kontroll-access-management-catalog
+ENV TZ=UTC
+
+WORKDIR /data
+
+COPY build/libs/$APPNAME*.jar /data/app.jar
+
+CMD ["java", "-jar", "/data/app.jar"]
+
+
