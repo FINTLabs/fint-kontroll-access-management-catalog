@@ -30,7 +30,6 @@ jobs:
           distribution: ${{ env.JAVA-DISTRIBUTION }}
           java-version: ${{ env.JAVA-VERSION }}
           cache: 'gradle'
-          fetch-depth: 2
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
