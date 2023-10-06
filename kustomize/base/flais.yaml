@@ -27,7 +27,7 @@ spec:
     - name: TZ
       value: Europe/Oslo
     - name: JAVA_TOOL_OPTIONS
-      value: '-XX:+ExitOnOutOfMemoryError -Xmx480M -verbose:gc'
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx1G -verbose:gc'
 
   kafka:
     enabled: true
