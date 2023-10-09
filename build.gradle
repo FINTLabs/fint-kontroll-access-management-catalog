@@ -65,6 +65,7 @@ dependencies {
     implementation platform('org.testcontainers:testcontainers-bom:1.19.0')
     testImplementation 'org.testcontainers:testcontainers'
     testImplementation 'org.testcontainers:kafka'
+    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:junit-jupiter'
 }
 
