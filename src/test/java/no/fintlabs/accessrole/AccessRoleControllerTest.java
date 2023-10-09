@@ -1,5 +1,6 @@
-package no.fintlabs;
+package no.fintlabs.accessrole;
 
+import no.fintlabs.SecurityConfig;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleController;
 import no.fintlabs.accessrole.AccessRoleRepository;
