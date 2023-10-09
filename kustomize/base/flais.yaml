@@ -23,6 +23,12 @@ spec:
     middlewares:
       - fint-kontroll-sso
 
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: JAVA_TOOL_OPTIONS
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx2G'
+
   kafka:
     enabled: true
     acls:
