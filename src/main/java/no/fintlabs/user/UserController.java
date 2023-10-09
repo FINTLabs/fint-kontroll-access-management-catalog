@@ -13,19 +13,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/accessmanagement/v1/user")
 public class UserController {
+
+    private final AccessUserRepository accessUserRepository;
+
+    public UserController(AccessUserRepository accessUserRepository) {
+        this.accessUserRepository = accessUserRepository;
+    }
+
     @ApiResponse(description = "Hent alle tilgjengelige roller")
     @GetMapping
-    public ResponseEntity<List<AccessUser>> getUsers() {
+    public ResponseEntity<List<AccessUserDto>> getUsers() {
         log.info("Fetching all users");
 
-        AccessUser user1 = AccessUser.builder()
-                .resourceId("237")
-                .userId("237")
-                .userName("morten.solberg@vigoiks.no")
-                .firstName("Morten")
-                .lastName("Solberg")
-                .build();
-
-        return ResponseEntity.ok(List.of(user1));
+        return ResponseEntity.ok(accessUserRepository.findAll().stream()
+                .map(AccessUserMapper::toDto)
+                .collect(java.util.stream.Collectors.toList()));
     }
 }

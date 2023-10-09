@@ -1,6 +1,7 @@
 package no.fintlabs;
 
 import no.fintlabs.accessrole.AccessRole;
+import no.fintlabs.accessrole.AccessRoleController;
 import no.fintlabs.accessrole.AccessRoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@WebMvcTest
+@WebMvcTest(AccessRoleController.class)
 @Import({SecurityConfig.class})
 public class AccessRoleControllerTest {
 
