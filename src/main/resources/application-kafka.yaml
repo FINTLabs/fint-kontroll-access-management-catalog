@@ -9,4 +9,8 @@ spring:
   kafka:
     consumer:
       group-id: ${fint.application-id}
-
+      security:
+        protocol: SSL
+    producer:
+      security:
+        protocol: SSL
