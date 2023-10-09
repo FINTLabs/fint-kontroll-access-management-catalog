@@ -7,8 +7,6 @@ fint:
 
 spring:
   kafka:
-    security:
-      protocol: 'SSL'
     consumer:
       group-id: ${fint.application-id}
 
