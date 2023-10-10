@@ -13,7 +13,11 @@ API endpoint for getting the OPA bundle file.
 ## Documentation
 
 ### Swagger
-http://localhost:8080/swagger-ui/index.html
+Lokalt: http://localhost:8080/swagger-ui/index.html
+
+Beta m/portforward: http://localhost:53212/beta/fintlabs-no/swagger-ui/index.html
 
 ### OpenAPI
-http://localhost:8080/v3/api-docs
+Lokalt: http://localhost:8080/v3/api-docs
+
+Beta m/portforward: http://localhost:53212/beta/fintlabs-no/v3/api-docs
