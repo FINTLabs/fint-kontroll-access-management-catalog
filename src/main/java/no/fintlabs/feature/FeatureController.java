@@ -2,7 +2,6 @@ package no.fintlabs.feature;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,15 @@ public class FeatureController {
         this.featureRepository = featureRepository;
     }
 
-    @GetMapping
+    @GetMapping(value = "/{roleid}")
+    @ResponseBody
+    public List<AccessRoleFeature> getFeaturesByRole(@PathVariable("roleid") String roleId) {
+        log.info("Fetching features for role {}", roleId);
+
+        return new ArrayList<>(featureRepository.findFeaturesByAccessRoleId(roleId));
+    }
+
+    @GetMapping()
     @ResponseBody
     public List<FeatureDto> getFeatures() {
         log.info("Fetching all available features");

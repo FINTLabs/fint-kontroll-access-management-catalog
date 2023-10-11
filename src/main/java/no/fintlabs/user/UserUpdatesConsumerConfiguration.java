@@ -24,13 +24,10 @@ public class UserUpdatesConsumerConfiguration {
                 .resource("user")
                 .build();
 
-        ConcurrentMessageListenerContainer container =
-                entityConsumerFactoryService.createFactory(AccessUser.class, (ConsumerRecord<String, AccessUser> consumerRecord) -> {
-                            log.info("Got accessuser update, saving: " + consumerRecord.value());
-                            accessUserRepository.save(consumerRecord.value());
-                        })
-                        .createContainer(entityTopicNameParameters);
-
-        return container;
+        return entityConsumerFactoryService.createFactory(AccessUser.class, (ConsumerRecord<String, AccessUser> consumerRecord) -> {
+                    log.info("Got accessuser update, saving: " + consumerRecord.value());
+                    accessUserRepository.save(consumerRecord.value());
+                })
+                .createContainer(entityTopicNameParameters);
     }
 }

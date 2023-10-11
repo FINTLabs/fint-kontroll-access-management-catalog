@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
-@Jacksonized
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,7 +1,11 @@
 package no.fintlabs.feature;
 
+import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.accesspermission.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
-import org.junit.jupiter.api.BeforeEach;
+import no.fintlabs.accessrole.AccessRoleRepository;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 @Testcontainers
 public class FeatureRepositoryIntegrationTest {
-
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15-alpine")
             .withDatabaseName("test")
@@ -28,6 +31,12 @@ public class FeatureRepositoryIntegrationTest {
 
     @Autowired
     private FeatureRepository featureRepository;
+
+    @Autowired
+    private AccessPermissionRepository accessPermissionRepository;
+
+    @Autowired
+    private AccessRoleRepository accessRoleRepository;
 
     @DynamicPropertySource
     static void registerPgProperties(DynamicPropertyRegistry registry) {
@@ -39,35 +48,72 @@ public class FeatureRepositoryIntegrationTest {
         registry.add("spring.flyway.password", postgreSQLContainer::getPassword);
     }
 
-    @BeforeEach
-    void setup() {
-        Feature feature1 = Feature.builder()
-                .name("Feature1")
-                .path("/api/feature1")
-                .build();
+    @Test
+    void shouldFindAllFeatures() {
+        Feature feature1 = createFeature("Feature1", "/api/feature1");
+        Feature feature2 = createFeature("Feature2", "/api/feature2");
 
-        Feature feature2 = Feature.builder()
-                .name("Feature2")
-                .path("/api/feature2")
-                .build();
+        List<Feature> features = featureRepository.findAll();
 
-        featureRepository.save(feature1);
-        featureRepository.save(feature2);
+        features.forEach(feature -> {
+            if (feature.getId().equals(feature1.getId())) {
+                assertThat(feature.getName()).isEqualTo("Feature1");
+                assertThat(feature.getPath()).isEqualTo("/api/feature1");
+            }
+
+            if (feature.getId().equals(feature2.getId())) {
+                assertThat(feature.getName()).isEqualTo("Feature2");
+                assertThat(feature.getPath()).isEqualTo("/api/feature2");
+            }
+        });
     }
 
     @Test
-    void shouldFindAllFeatures() {
-        List<Feature> features = featureRepository.findAll();
+    void shouldFindFeaturesForGivenRole() {
+        Feature feature1 = createFeature("Feature1", "/api/feature1");
+        AccessRole role = createRole("ata", "applikasjonstilgangsadministrator");
+        createAccessPermission(feature1.getId(), role.getAccessRoleId(), "GET");
 
-        assertEquals(2, features.size());
+        List<AccessRoleFeature> features = featureRepository.findFeaturesByAccessRoleId("ata");
 
-        Feature feature1 = features.get(0);
-        assertThat(feature1.getName()).isEqualTo("Feature1");
-        assertThat(feature1.getPath()).isEqualTo("/api/feature1");
+        assertEquals(1, features.size());
 
-        Feature feature2 = features.get(1);
-        assertThat(feature2.getName()).isEqualTo("Feature2");
-        assertThat(feature2.getPath()).isEqualTo("/api/feature2");
+        AccessRoleFeature accessRoleFeature = features.get(0);
+        assertThat(accessRoleFeature.getName()).isEqualTo("Feature1");
+        assertThat(accessRoleFeature.getPath()).isEqualTo("/api/feature1");
+        assertThat(accessRoleFeature.getOperation()).isEqualTo("GET");
+    }
+
+    private void createAccessPermission(Long featureId, String accessRoleId, String operation) {
+        AccessPermission accessPermission = AccessPermission.builder()
+                .featureId(featureId)
+                .accessRoleId(accessRoleId)
+                .operation(operation)
+                .build();
+
+        accessPermissionRepository.save(accessPermission);
+    }
+
+    @NotNull
+    private AccessRole createRole(String accessRoleId, String name) {
+        AccessRole role = AccessRole.builder()
+                .accessRoleId(accessRoleId)
+                .name(name)
+                .build();
+
+        accessRoleRepository.save(role);
+        return role;
+    }
+
+    @NotNull
+    private Feature createFeature(String name, String path) {
+        Feature feature1 = Feature.builder()
+                .name(name)
+                .path(path)
+                .build();
+
+        featureRepository.save(feature1);
+        return feature1;
     }
 }
 
