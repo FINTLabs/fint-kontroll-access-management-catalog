@@ -45,4 +45,20 @@ public class FeatureControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Feature 1"))
                 .andExpect(jsonPath("$[0].path").value("/api/orgunit"));
     }
+
+    @WithMockUser(value = "spring")
+    @Test
+    public void shouldGetFeaturesByRole() throws Exception {
+        AccessRoleFeature feature = new AccessRoleFeature("Feature 1", "/api/orgunit", "GET");
+
+        when(featureRepositoryMock.findFeaturesByAccessRoleId("ata")).thenReturn(List.of(feature));
+
+        mockMvc.perform(get("/api/accessmanagement/v1/feature/ata"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$[0].name").value("Feature 1"))
+                .andExpect(jsonPath("$[0].path").value("/api/orgunit"))
+                .andExpect(jsonPath("$[0].operation").value("GET"));
+    }
 }
