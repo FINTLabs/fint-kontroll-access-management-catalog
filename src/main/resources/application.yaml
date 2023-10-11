@@ -17,6 +17,12 @@ spring:
       - db
       - kafka
 
+server:
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: never
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

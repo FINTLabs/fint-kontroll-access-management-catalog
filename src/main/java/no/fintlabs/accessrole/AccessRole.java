@@ -22,20 +22,11 @@ public class AccessRole {
 
     private String name;
 
-    @OneToMany(mappedBy = "accessRole")
-    private List<AccessPermission> accessPermissions;
-
     public AccessRole() {
     }
 
     public AccessRole(String accessRoleId, String name) {
         this.accessRoleId = accessRoleId;
         this.name = name;
-    }
-
-    public AccessRole(String accessRoleId, String name, List<AccessPermission> accessPermissions) {
-        this.accessRoleId = accessRoleId;
-        this.name = name;
-        this.accessPermissions = accessPermissions;
     }
 }
