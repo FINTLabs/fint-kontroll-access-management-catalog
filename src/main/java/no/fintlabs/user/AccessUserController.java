@@ -12,11 +12,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/accessmanagement/v1/user")
-public class UserController {
+public class AccessUserController {
 
     private final AccessUserRepository accessUserRepository;
 
-    public UserController(AccessUserRepository accessUserRepository) {
+    public AccessUserController(AccessUserRepository accessUserRepository) {
         this.accessUserRepository = accessUserRepository;
     }
 

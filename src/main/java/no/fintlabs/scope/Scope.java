@@ -1,6 +1,8 @@
-package no.fintlabs.user;
+package no.fintlabs.scope;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -10,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.fintlabs.accessassignment.AccessAssignment;
 
 import java.util.List;
 
@@ -19,21 +20,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "accessuser")
+@Table(name = "scope")
 @Getter
 @Setter
-public class AccessUser {
-    @Id
-    private String resourceId;
+public class Scope {
+    @Id()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String userId;
+    private String objectType;
 
-    private String userName;
-
-    private String firstName;
-
-    private String lastName;
-
-    @OneToMany(mappedBy = "accessUser")
-    private List<AccessAssignment> accessAssignments;
+    @OneToMany(mappedBy = "scope")
+    private List<ScopeOrgUnit> scopeOrgUnits;
 }
