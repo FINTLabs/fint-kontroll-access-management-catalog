@@ -1,6 +1,7 @@
 package no.fintlabs.user;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -34,6 +35,6 @@ public class AccessUser {
 
     private String lastName;
 
-    @OneToMany(mappedBy = "accessUser")
+    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments;
 }

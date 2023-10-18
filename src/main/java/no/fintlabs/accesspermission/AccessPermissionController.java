@@ -35,4 +35,6 @@ public class AccessPermissionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when creating accesspermission");
         }
     }
+
+    //TODO: getter?
 }

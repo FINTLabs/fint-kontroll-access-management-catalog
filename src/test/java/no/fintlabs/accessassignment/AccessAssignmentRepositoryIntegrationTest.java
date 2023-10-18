@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Testcontainers
 public class AccessAssignmentRepositoryIntegrationTest {
+
     @Autowired
     private AccessAssignmentRepository accessAssignmentRepository;
 
@@ -81,8 +82,8 @@ public class AccessAssignmentRepositoryIntegrationTest {
 
         List<AccessAssignment> accessAssignments = new ArrayList<>();
         accessAssignments.add(accessAssignment);
-        accessUser.setAccessAssignments(accessAssignments);
 
+        accessUser.setAccessAssignments(accessAssignments);
         AccessUser updatedAccessUser = accessUserRepository.save(accessUser);
 
         accessUserRepository.findById(accessUser.getResourceId()).ifPresent(foundAccessUser -> {
@@ -90,8 +91,10 @@ public class AccessAssignmentRepositoryIntegrationTest {
             assertThat(foundAccessUser.getAccessAssignments()).hasSize(1);
             assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getObjectType()).isEqualTo("orgunit");
             assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits()).hasSize(2);
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(0).getScopeOrgUnitId().getOrgUnitId()).isEqualTo("198");
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(1).getScopeOrgUnitId().getOrgUnitId()).isEqualTo("153");
+            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(0).getScopeOrgUnitId()
+                               .getOrgUnitId()).isEqualTo("198");
+            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(1).getScopeOrgUnitId()
+                               .getOrgUnitId()).isEqualTo("153");
         });
 
     }
@@ -100,10 +103,10 @@ public class AccessAssignmentRepositoryIntegrationTest {
     private AccessAssignment createAccessAssignment(Scope savedOrgUnitScope, AccessUser savedAccessUser) {
         AccessAssignment accessAssignment = AccessAssignment.builder()
                 .accessAssignmentId(AccessAssignmentId.builder()
-                        .scopeId(savedOrgUnitScope.getId())
-                        .userId(savedAccessUser.getUserId())
-                        .accessRoleId("ata")
-                        .build())
+                                            .scopeId(savedOrgUnitScope.getId())
+                                            .userId(savedAccessUser.getUserId())
+                                            .accessRoleId("ata")
+                                            .build())
                 .accessUser(savedAccessUser)
                 .scope(savedOrgUnitScope)
                 .build();
@@ -115,7 +118,8 @@ public class AccessAssignmentRepositoryIntegrationTest {
     private AccessUser createAccessUser() {
         AccessUser accessUser = AccessUser.builder()
                 .resourceId("123")
-                .userId("morten.solberg@vigoiks.no")
+                .userId("123")
+                .userName("morten.solberg@vigoiks.no")
                 .build();
 
         return accessUserRepository.save(accessUser);
@@ -125,9 +129,9 @@ public class AccessAssignmentRepositoryIntegrationTest {
     private ScopeOrgUnit createScopeOrgUnitRelation(Scope savedOrgUnitScope, OrgUnit savedOrgUnit1) {
         ScopeOrgUnit scopeOrgUnit1 = ScopeOrgUnit.builder()
                 .scopeOrgUnitId(ScopeOrgUnitId.builder()
-                        .scopeId(savedOrgUnitScope.getId())
-                        .orgUnitId(savedOrgUnit1.getOrgUnitId())
-                        .build())
+                                        .scopeId(savedOrgUnitScope.getId())
+                                        .orgUnitId(savedOrgUnit1.getOrgUnitId())
+                                        .build())
                 .scope(savedOrgUnitScope)
                 .build();
 
@@ -147,6 +151,6 @@ public class AccessAssignmentRepositoryIntegrationTest {
         OrgUnit orgUnit = OrgUnit.builder()
                 .orgUnitId(orgUnitId)
                 .build();
-        return  orgUnitRepository.save(orgUnit);
+        return orgUnitRepository.save(orgUnit);
     }
 }

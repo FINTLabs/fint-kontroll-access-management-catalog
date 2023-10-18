@@ -2,6 +2,7 @@ package no.fintlabs.accessassignment;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -25,12 +26,13 @@ public class AccessAssignment {
     @EmbeddedId
     private AccessAssignmentId accessAssignmentId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("scopeId")
+    @JoinColumn(name = "scope_id", nullable = false)
     private Scope scope;
 }

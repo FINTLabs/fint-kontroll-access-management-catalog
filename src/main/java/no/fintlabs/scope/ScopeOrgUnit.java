@@ -18,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "scope_org_unit")
+@Table(name = "scope_orgunit")
 @Getter
 @Setter
 public class ScopeOrgUnit {

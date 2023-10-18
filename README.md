@@ -11,6 +11,7 @@ API endpoint for getting the OPA bundle file.
 - Provide API for OPA to get bundle file.
 
 ## Documentation
+Confluence: https://fintlabs.atlassian.net/wiki/spaces/FINTKB/pages/544473089/Access+management+Modul
 
 ### Swagger
 Lokalt: http://localhost:8080/swagger-ui/index.html
