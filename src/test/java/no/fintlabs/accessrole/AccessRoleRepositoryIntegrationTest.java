@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -37,6 +36,7 @@ public class AccessRoleRepositoryIntegrationTest {
         registry.add("spring.flyway.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.flyway.user", postgreSQLContainer::getUsername);
         registry.add("spring.flyway.password", postgreSQLContainer::getPassword);
+        registry.add("spring.flyway.enabled", () -> "true");
     }
 
     @BeforeEach

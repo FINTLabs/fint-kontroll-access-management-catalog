@@ -31,7 +31,9 @@ public class AccessAssignmentController {
     private final ScopeRepository scopeRepository;
     private final OrgUnitRepository orgUnitRepository;
 
-    public AccessAssignmentController(AccessAssignmentService accessAssignmentService, AccessUserRepository accessUserRepository, AccessAssignmentRepository accessAssignmentRepository, AccessRoleRepository accessRoleRepository, ScopeRepository scopeRepository, OrgUnitRepository orgUnitRepository) {
+    public AccessAssignmentController(AccessAssignmentService accessAssignmentService, AccessUserRepository accessUserRepository,
+                                      AccessAssignmentRepository accessAssignmentRepository, AccessRoleRepository accessRoleRepository,
+                                      ScopeRepository scopeRepository, OrgUnitRepository orgUnitRepository) {
         this.accessAssignmentService = accessAssignmentService;
         this.accessUserRepository = accessUserRepository;
         this.accessAssignmentRepository = accessAssignmentRepository;
@@ -56,14 +58,9 @@ public class AccessAssignmentController {
             Scope scope = scopeRepository.findById(accessAssignmentDto.scopeId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Scope does not exist"));
 
-            accessAssignmentDto.orgUnitIds().forEach(orgUnitId -> {
-                if (!orgUnitRepository.existsById(orgUnitId)) {
-                    log.error("OrgUnit with id {} does not exist, not saving", orgUnitId);
-                }
-
-                orgUnitRepository.findById(orgUnitId)
-                        .ifPresent(orgUnit -> accessAssignmentService.createScopeOrgUnitRelation(orgUnit, scope));
-            });
+            accessAssignmentDto.orgUnitIds().forEach(orgUnitId -> orgUnitRepository.findByOrgUnitId(orgUnitId)
+                    .ifPresentOrElse(orgUnit -> accessAssignmentService.createScopeOrgUnitRelation(orgUnit, scope),
+                                     () -> log.error("OrgUnit with id {} does not exist, not saving", orgUnitId)));
 
             AccessAssignment savedAssignment = accessAssignmentRepository.save(createAccessAssignment(scope, accessUser, accessRole));
 

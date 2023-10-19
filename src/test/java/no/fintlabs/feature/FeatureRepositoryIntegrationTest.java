@@ -4,7 +4,6 @@ import no.fintlabs.accesspermission.AccessPermission;
 import no.fintlabs.accesspermission.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +45,7 @@ public class FeatureRepositoryIntegrationTest {
         registry.add("spring.flyway.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.flyway.user", postgreSQLContainer::getUsername);
         registry.add("spring.flyway.password", postgreSQLContainer::getPassword);
+        registry.add("spring.flyway.enabled", () -> "true");
     }
 
     @Test

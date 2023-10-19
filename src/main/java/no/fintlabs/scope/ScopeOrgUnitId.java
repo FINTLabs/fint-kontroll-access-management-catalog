@@ -17,5 +17,5 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class ScopeOrgUnitId implements Serializable {
     private Long scopeId;
-    private String orgUnitId;
+    private Long orgUnitId;
 }

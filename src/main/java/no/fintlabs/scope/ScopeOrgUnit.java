@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import no.fintlabs.orgunit.OrgUnit;
 
 @Builder
 @Entity
@@ -29,4 +30,9 @@ public class ScopeOrgUnit {
     @MapsId("scopeId")
     @JoinColumn(name = "scope_id", nullable = false)
     private Scope scope;
+
+    @ManyToOne(optional = false)
+    @MapsId("orgUnitId")
+    @JoinColumn(name = "org_unit_id", nullable = false)
+    private OrgUnit orgUnit;
 }

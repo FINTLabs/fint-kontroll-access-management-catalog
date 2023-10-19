@@ -1,5 +1,6 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.orgunit.OrgUnit;
 import no.fintlabs.scope.Scope;
 import no.fintlabs.scope.ScopeOrgUnit;
 import no.fintlabs.scope.ScopeOrgUnitId;
@@ -17,11 +18,14 @@ class AccessAssignmentMapperTest {
     public void shouldMapToDto() {
         List<ScopeOrgUnit> scopeOrgUnits = new ArrayList<>();
 
-        ScopeOrgUnit orgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "orgUnit1"), new Scope());
-        ScopeOrgUnit orgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "orgUnit2"), new Scope());
+        OrgUnit orgUnit1 = new OrgUnit(1L, "orgUnit1", scopeOrgUnits);
+        OrgUnit orgUnit2 = new OrgUnit(2L, "orgUnit2", scopeOrgUnits);
 
-        scopeOrgUnits.add(orgUnit1);
-        scopeOrgUnits.add(orgUnit2);
+        ScopeOrgUnit scopeOrgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, 1L), new Scope(), orgUnit1);
+        ScopeOrgUnit scopeOrgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, 2L), new Scope(), orgUnit2);
+
+        scopeOrgUnits.add(scopeOrgUnit1);
+        scopeOrgUnits.add(scopeOrgUnit2);
 
         Scope scope = new Scope();
         scope.setId(1L);

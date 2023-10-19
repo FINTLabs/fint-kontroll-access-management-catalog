@@ -19,7 +19,7 @@ public class AccessAssignmentService {
         ScopeOrgUnit scopeOrgUnit = ScopeOrgUnit.builder()
                 .scopeOrgUnitId(ScopeOrgUnitId.builder()
                                         .scopeId(scope.getId())
-                                        .orgUnitId(orgUnit.getOrgUnitId())
+                                        .orgUnitId(orgUnit.getId())
                                         .build())
                 .scope(scope)
                 .build();

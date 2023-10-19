@@ -57,6 +57,7 @@ public class AccessAssignmentRepositoryIntegrationTest {
         registry.add("spring.flyway.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.flyway.user", postgreSQLContainer::getUsername);
         registry.add("spring.flyway.password", postgreSQLContainer::getPassword);
+        registry.add("spring.flyway.enabled", () -> "true");
     }
 
     @Test
@@ -91,9 +92,9 @@ public class AccessAssignmentRepositoryIntegrationTest {
             assertThat(foundAccessUser.getAccessAssignments()).hasSize(1);
             assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getObjectType()).isEqualTo("orgunit");
             assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits()).hasSize(2);
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(0).getScopeOrgUnitId()
+            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(0).getOrgUnit()
                                .getOrgUnitId()).isEqualTo("198");
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(1).getScopeOrgUnitId()
+            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(1).getOrgUnit()
                                .getOrgUnitId()).isEqualTo("153");
         });
 
@@ -126,16 +127,17 @@ public class AccessAssignmentRepositoryIntegrationTest {
     }
 
     @NotNull
-    private ScopeOrgUnit createScopeOrgUnitRelation(Scope savedOrgUnitScope, OrgUnit savedOrgUnit1) {
-        ScopeOrgUnit scopeOrgUnit1 = ScopeOrgUnit.builder()
+    private ScopeOrgUnit createScopeOrgUnitRelation(Scope savedOrgUnitScope, OrgUnit orgUnit) {
+        ScopeOrgUnit scopeOrgUnit = ScopeOrgUnit.builder()
                 .scopeOrgUnitId(ScopeOrgUnitId.builder()
                                         .scopeId(savedOrgUnitScope.getId())
-                                        .orgUnitId(savedOrgUnit1.getOrgUnitId())
+                                        .orgUnitId(orgUnit.getId())
                                         .build())
                 .scope(savedOrgUnitScope)
+                .orgUnit(orgUnit)
                 .build();
 
-        return scopeOrgUnitRepository.save(scopeOrgUnit1);
+        return scopeOrgUnitRepository.save(scopeOrgUnit);
     }
 
     @NotNull
