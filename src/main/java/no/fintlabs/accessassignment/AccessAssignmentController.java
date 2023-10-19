@@ -7,9 +7,6 @@ import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.orgunit.OrgUnitRepository;
 import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.scope.ScopeOrgUnitId;
-import no.fintlabs.scope.ScopeOrgUnitRepository;
 import no.fintlabs.scope.ScopeRepository;
 import no.fintlabs.user.AccessUser;
 import no.fintlabs.user.AccessUserRepository;
@@ -22,27 +19,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/accessmanagement/v1/accessassignment")
 public class AccessAssignmentController {
+
+    private final AccessAssignmentService accessAssignmentService;
     private final AccessUserRepository accessUserRepository;
     private final AccessAssignmentRepository accessAssignmentRepository;
     private final AccessRoleRepository accessRoleRepository;
     private final ScopeRepository scopeRepository;
     private final OrgUnitRepository orgUnitRepository;
-    private final ScopeOrgUnitRepository scopeOrgUnitRepository;
 
-    public AccessAssignmentController(AccessUserRepository accessUserRepository, AccessAssignmentRepository accessAssignmentRepository, AccessRoleRepository accessRoleRepository, ScopeRepository scopeRepository, OrgUnitRepository orgUnitRepository, ScopeOrgUnitRepository scopeOrgUnitRepository) {
+    public AccessAssignmentController(AccessAssignmentService accessAssignmentService, AccessUserRepository accessUserRepository, AccessAssignmentRepository accessAssignmentRepository, AccessRoleRepository accessRoleRepository, ScopeRepository scopeRepository, OrgUnitRepository orgUnitRepository) {
+        this.accessAssignmentService = accessAssignmentService;
         this.accessUserRepository = accessUserRepository;
         this.accessAssignmentRepository = accessAssignmentRepository;
         this.accessRoleRepository = accessRoleRepository;
         this.scopeRepository = scopeRepository;
         this.orgUnitRepository = orgUnitRepository;
-        this.scopeOrgUnitRepository = scopeOrgUnitRepository;
     }
 
     @PostMapping
@@ -67,47 +62,31 @@ public class AccessAssignmentController {
                 }
 
                 orgUnitRepository.findById(orgUnitId)
-                        .ifPresent(orgUnit -> {
-                            ScopeOrgUnit scopeOrgUnit = ScopeOrgUnit.builder()
-                                    .scopeOrgUnitId(ScopeOrgUnitId.builder()
-                                            .scopeId(scope.getId())
-                                            .orgUnitId(orgUnit.getOrgUnitId())
-                                            .build())
-                                    .scope(scope)
-                                    .build();
-
-                            scopeOrgUnitRepository.save(scopeOrgUnit);
-                        });
+                        .ifPresent(orgUnit -> accessAssignmentService.createScopeOrgUnitRelation(orgUnit, scope));
             });
 
-            AccessAssignment accessAssignment = AccessAssignment.builder()
-                    .accessAssignmentId(AccessAssignmentId.builder()
-                                                .scopeId(scope.getId())
-                                                .userId(accessUser.getUserId())
-                                                .accessRoleId(accessRole.getAccessRoleId())
-                                                .build())
-                    .accessUser(accessUser)
-                    .scope(scope)
-                    .build();
+            AccessAssignment savedAssignment = accessAssignmentRepository.save(createAccessAssignment(scope, accessUser, accessRole));
 
-            AccessAssignment savedAssignment = accessAssignmentRepository.save(accessAssignment);
-
-            if(accessUser.getAccessAssignments() == null) {
-                accessUser.setAccessAssignments(new ArrayList<>());
-            }
-
-            accessUser.getAccessAssignments().add(accessAssignment);
+            accessUser.addAccessAssignment(savedAssignment);
             accessUserRepository.save(accessUser);
 
-            return Optional.of(savedAssignment)
-                    .map(AccessAssignmentMapper::toDto)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccessAssignment does not exist"));
-
-
+            return AccessAssignmentMapper.toDto(savedAssignment);
 
         } catch (Exception e) {
             log.error("Error creating accessassignment {}", accessAssignmentDto, e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when creating accessassignment");
         }
+    }
+
+    private AccessAssignment createAccessAssignment(Scope scope, AccessUser accessUser, AccessRole accessRole) {
+        return AccessAssignment.builder()
+                .accessAssignmentId(AccessAssignmentId.builder()
+                                            .scopeId(scope.getId())
+                                            .userId(accessUser.getUserId())
+                                            .accessRoleId(accessRole.getAccessRoleId())
+                                            .build())
+                .accessUser(accessUser)
+                .scope(scope)
+                .build();
     }
 }

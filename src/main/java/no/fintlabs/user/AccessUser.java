@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.accessassignment.AccessAssignment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -37,4 +38,12 @@ public class AccessUser {
 
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments;
+
+    public void addAccessAssignment(AccessAssignment accessAssignment) {
+        if(accessAssignments == null) {
+            accessAssignments = new ArrayList<>();
+        }
+
+        accessAssignments.add(accessAssignment);
+    }
 }
