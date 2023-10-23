@@ -36,7 +36,7 @@ public class AccessUser {
 
     private String lastName;
 
-    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accessUser", fetch = FetchType.EAGER)
     private List<AccessAssignment> accessAssignments;
 
     public void addAccessAssignment(AccessAssignment accessAssignment) {

@@ -42,6 +42,7 @@ public class OrgUnitsConsumerIntegrationTest {
         registry.add("fint.kafka.topic.org-id", () -> topicOrgId);
         registry.add("fint.kafka.topic.domain-context", () -> topicDomainContext);
         registry.add("fint.kafka.application-id", () -> applicationId);
+        registry.add("opa.jsonexport.path", () -> "");
     }
 
     @Test

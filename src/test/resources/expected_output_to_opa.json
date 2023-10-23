@@ -1,0 +1,84 @@
+{
+  "user_assignments": {
+    "morten.solberg@vigoiks.no": [
+      {
+        "rolesandscopes": [
+          {
+            "role": "aa",
+            "scopes": [
+              {
+                "id": "1",
+                "objecttype": "user",
+                "orgunits": [
+                  "198",
+                  "153",
+                  "6",
+                  "1"
+                ]
+              },
+              {
+                "id": "2",
+                "objecttype": "role",
+                "orgunits": [
+                  "198",
+                  "153"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "erling.jahr@vigoiks.no": [
+      {
+        "rolesandscopes": [
+          {
+            "role": "ata",
+            "scopes": [
+              {
+                "id": "1",
+                "objecttype": "user",
+                "orgunits": [
+                  "198",
+                  "153",
+                  "6",
+                  "1"
+                ]
+              },
+              {
+                "id": "2",
+                "objecttype": "role",
+                "orgunits": [
+                  "198",
+                  "153",
+                  "6",
+                  "1"
+                ]
+              },
+              {
+                "id": "3",
+                "objecttype": "resource",
+                "orgunits": [
+                  "198",
+                  "153",
+                  "6",
+                  "1"
+                ]
+              },
+              {
+                "id": "4",
+                "objecttype": "orgunit",
+                "orgunits": [
+                  "198",
+                  "153",
+                  "6",
+                  "1"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

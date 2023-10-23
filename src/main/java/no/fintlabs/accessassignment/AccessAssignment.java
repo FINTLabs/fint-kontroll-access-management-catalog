@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.scope.Scope;
 import no.fintlabs.user.AccessUser;
@@ -22,16 +23,17 @@ import no.fintlabs.user.AccessUser;
 @ToString
 @Table(name = "accessassignment")
 @Getter
+@Setter
 public class AccessAssignment {
     @EmbeddedId
     private AccessAssignmentId accessAssignmentId;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("scopeId")
     @JoinColumn(name = "scope_id", nullable = false)
     private Scope scope;

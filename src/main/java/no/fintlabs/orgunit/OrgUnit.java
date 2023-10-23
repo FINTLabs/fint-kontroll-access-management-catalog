@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.scope.ScopeOrgUnit;
 
@@ -25,6 +26,7 @@ import java.util.List;
 @ToString
 @Table(name = "org_unit")
 @Getter
+@Setter
 public class OrgUnit {
 
     @Id
@@ -35,6 +37,6 @@ public class OrgUnit {
     @JsonProperty("organisationUnitId")
     private String orgUnitId;
 
-    @OneToMany(mappedBy = "orgUnit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
     private List<ScopeOrgUnit> scopeOrgUnits;
 }

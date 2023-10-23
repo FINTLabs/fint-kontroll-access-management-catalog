@@ -33,6 +33,6 @@ public class Scope {
     @Column(name = "objecttype")
     private String objectType;
 
-    @OneToMany(mappedBy = "scope", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scope", fetch = FetchType.EAGER)
     private List<ScopeOrgUnit> scopeOrgUnits;
 }
