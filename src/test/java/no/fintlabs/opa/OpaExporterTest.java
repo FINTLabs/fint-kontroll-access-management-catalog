@@ -48,7 +48,7 @@ public class OpaExporterTest {
 
         Path mappedOpaJsonFile = tempDir.resolve("output.json");
 
-        dataExporter.setExportPath(mappedOpaJsonFile.toString());
+        dataExporter.setOpaFile(mappedOpaJsonFile.toString());
         dataExporter.exportOpaDataToJson();
 
         String expectedJson = IOUtils.toString(getClass().getResourceAsStream("/expected_output_to_opa.json"), UTF_8.name());

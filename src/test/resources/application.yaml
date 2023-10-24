@@ -36,4 +36,4 @@ spring:
 
   opa:
     jsonexport:
-      path: files/opaexport.json
+      filename: opaexport.json
