@@ -15,11 +15,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,42 +38,51 @@ public class OpaExporter {
         this.accessUserRepository = accessUserRepository;
     }
 
-    @Scheduled(cron = "0 */10 * * * ?") //Every 10 minutes
+    @Scheduled(cron = "* * * * * ?") //Every 10 minutes
+//    @Scheduled(cron = "0 */10 * * * ?") //Every 10 minutes
     public void exportOpaDataToJson() throws Exception {
         log.info("Exporting datafile for OPA");
         try {
+            String opaFilePath = System.getProperty("java.io.tmpdir") + "/opa/datacatalog/" + opaFile;
+
             List<AccessUser> users = accessUserRepository.findAll();
             UserAssignmentsDto userAssignmentsDto = mapUsersToUserAssignmentsDto(users);
-            writeToFile(userAssignmentsDto, opaFile);
-            createOpaBundle();
+            writeToFile(userAssignmentsDto, opaFilePath);
+            createOpaBundle(opaFilePath);
         } catch (Exception e) {
             log.error("Failed to export datafile for OPA", e);
             throw e;
         }
     }
 
-    private void writeToFile(UserAssignmentsDto data, String filename) throws IOException {
+    private void writeToFile(UserAssignmentsDto data, String opaFilePath) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         byte[] json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(data);
 
-        Path opaDataPath = Paths.get("src", "main", "resources", "opa", "datacatalog", filename);
+        log.info("Writing OPA data to file: {}", opaFilePath);
 
+        File opaFileInTmp = new File(opaFilePath);
 
-        if (!Files.exists(opaDataPath.getParent())) {
-            Files.createDirectories(opaDataPath.getParent());
+        if(!opaFileInTmp.getParentFile().exists()) {
+            opaFileInTmp.getParentFile().mkdirs();
         }
 
-        Files.write(opaDataPath, json);
+        try(FileWriter fileWriter = new FileWriter(opaFileInTmp)) {
+            fileWriter.write(new String(json));
+            log.info("Wrote OPA data to file: {}", opaFileInTmp.getAbsolutePath());
+        }
     }
 
-    private void createOpaBundle() throws IOException {
-        Path bundlePath = Paths.get("src", "main", "resources", "opabundle", "my-bundle.tar.gz");
+    private void createOpaBundle(String opaDatafilePath) throws IOException {
+        String tarFile = System.getProperty("java.io.tmpdir") + "/opabundle/opabundle.tar.gz";
 
-        if (!Files.exists(bundlePath.getParent())) {
-            Files.createDirectories(bundlePath.getParent());
+        File opaBundlePath = new File(tarFile);
+
+        if(!opaBundlePath.getParentFile().exists()) {
+            opaBundlePath.getParentFile().mkdirs();
         }
 
-        File tarFile = new File("src/main/resources/opabundle/my-bundle.tar.gz");
+        log.info("Writing OPA data to file: {}", tarFile);
 
         try (FileOutputStream fOut = new FileOutputStream(tarFile);
              GZIPOutputStream gzOut = new GZIPOutputStream(fOut);
@@ -83,7 +90,7 @@ public class OpaExporter {
 
             //TODO: skriv opa json til tmp og hent derfra, får ikke tak i src når man kjører i docker
 
-            addFileToTar(tOut, "src/main/resources/opa/datacatalog/" + opaFile, "datacatalog/data.json");
+            addFileToTar(tOut, opaDatafilePath, "datacatalog/data.json");
             addFileToTar(tOut, "src/main/resources/opa/policy/auth.rego", "auth.rego");
         }
     }
