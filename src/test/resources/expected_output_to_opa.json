@@ -80,5 +80,24 @@
         ]
       }
     ]
+  },
+  "role_authorizations": {
+    "ata": [
+      {
+        "operation": "GET",
+        "uri": "/api/feature"
+      },
+      {
+        "operation": "POST",
+        "uri": "/api/feature2"
+      }
+    ]
+  },
+  "roles": {
+    "applikasjonstilgangsadministrator": [
+      {
+        "id": "ata"
+      }
+    ]
   }
 }

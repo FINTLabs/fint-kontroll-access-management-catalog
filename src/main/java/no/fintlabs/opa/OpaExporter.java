@@ -3,6 +3,10 @@ package no.fintlabs.opa;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.accessassignment.AccessAssignment;
+import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.accesspermission.AccessPermissionRepository;
+import no.fintlabs.accessrole.AccessRole;
+import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.user.AccessUser;
 import no.fintlabs.user.AccessUserRepository;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -30,12 +34,16 @@ import java.util.zip.GZIPOutputStream;
 @Slf4j
 public class OpaExporter {
     private final AccessUserRepository accessUserRepository;
+    private final AccessPermissionRepository accessPermissionRepository;
+    private final AccessRoleRepository accessRoleRepository;
 
     @Value("${opa.jsonexport.filename}")
     private String opaFile;
 
-    public OpaExporter(AccessUserRepository accessUserRepository) {
+    public OpaExporter(AccessUserRepository accessUserRepository, AccessPermissionRepository accessPermissionRepository, AccessRoleRepository accessRoleRepository) {
         this.accessUserRepository = accessUserRepository;
+        this.accessPermissionRepository = accessPermissionRepository;
+        this.accessRoleRepository = accessRoleRepository;
     }
 
     @Scheduled(cron = "* * * * * ?") //Every 10 minutes
@@ -46,8 +54,11 @@ public class OpaExporter {
             String opaFilePath = System.getProperty("java.io.tmpdir") + "/opa/datacatalog/" + opaFile;
 
             List<AccessUser> users = accessUserRepository.findAll();
-            UserAssignmentsDto userAssignmentsDto = mapUsersToUserAssignmentsDto(users);
-            writeToFile(userAssignmentsDto, opaFilePath);
+            List<AccessPermission> permissions = accessPermissionRepository.findAll();
+            List<AccessRole> roles = accessRoleRepository.findAll();
+
+            OpaDto opaDto = mapDataToOpaDto(users, permissions, roles);
+            writeToFile(opaDto, opaFilePath);
             createOpaBundle(opaFilePath);
         } catch (Exception e) {
             log.error("Failed to export datafile for OPA", e);
@@ -55,7 +66,7 @@ public class OpaExporter {
         }
     }
 
-    private void writeToFile(UserAssignmentsDto data, String opaFilePath) throws IOException {
+    private void writeToFile(OpaDto data, String opaFilePath) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         byte[] json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(data);
 
@@ -106,18 +117,24 @@ public class OpaExporter {
         }
     }
 
-    //TODO: få inn data om roller og role authorizations
-    private UserAssignmentsDto mapUsersToUserAssignmentsDto(List<AccessUser> users) {
-        UserAssignmentsDto userDto = new UserAssignmentsDto();
+    private OpaDto mapDataToOpaDto(List<AccessUser> users, List<AccessPermission> permissions, List<AccessRole> roles) {
+        OpaDto opaDto = new OpaDto();
+
+        opaDto.setUser_assignments(mapUserAssignments(users));
+        opaDto.setRole_authorizations(RoleAuthorizationMapper.toRoleAuthorizations(permissions));
+        opaDto.setRoles(RolesMapper.toRoles(roles));
+
+        return opaDto;
+    }
+
+    private Map<String, List<RolesAndScopesDto>> mapUserAssignments(List<AccessUser> users) {
         Map<String, List<RolesAndScopesDto>> userAssignments = new HashMap<>();
 
         for (AccessUser user : users) {
             RolesAndScopesDto rolesAndScopesWrapper = mapAccessUserToRolesAndScopesDto(user);
             userAssignments.put(user.getUserName(), Collections.singletonList(rolesAndScopesWrapper));
         }
-
-        userDto.setUser_assignments(userAssignments);
-        return userDto;
+        return userAssignments;
     }
 
     private RolesAndScopesDto mapAccessUserToRolesAndScopesDto(AccessUser user) {

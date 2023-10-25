@@ -9,7 +9,9 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class UserAssignmentsDto {
+public class OpaDto {
 
     private Map<String, List<RolesAndScopesDto>> user_assignments = new HashMap<>();
+    private Map<String, List<RoleAuthorizationsDto>> role_authorizations = new HashMap<>();
+    private Map<String, List<RoleDto>> roles = new HashMap<>();
 }

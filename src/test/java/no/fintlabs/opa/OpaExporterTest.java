@@ -2,6 +2,11 @@ package no.fintlabs.opa;
 
 import no.fintlabs.accessassignment.AccessAssignment;
 import no.fintlabs.accessassignment.AccessAssignmentId;
+import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.accesspermission.AccessPermissionRepository;
+import no.fintlabs.accessrole.AccessRole;
+import no.fintlabs.accessrole.AccessRoleRepository;
+import no.fintlabs.feature.Feature;
 import no.fintlabs.orgunit.OrgUnit;
 import no.fintlabs.scope.Scope;
 import no.fintlabs.scope.ScopeOrgUnit;
@@ -9,9 +14,9 @@ import no.fintlabs.scope.ScopeOrgUnitId;
 import no.fintlabs.user.AccessUser;
 import no.fintlabs.user.AccessUserRepository;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,31 +38,51 @@ public class OpaExporterTest {
     @Mock
     private AccessUserRepository accessUserRepository;
 
+    @Mock
+    private AccessPermissionRepository accessPermissionRepository;
+
+    @Mock
+    private AccessRoleRepository accessRoleRepository;
+
     @InjectMocks
     private OpaExporter dataExporter;
-
-    @TempDir
-    Path tempDir;
 
     @Test
     public void shouldMapObjectDataToOpaJson() throws Exception {
         AccessUser userErling = createMockAccessUserErling();
         AccessUser userMorten = createMockAccessUserMorten();
 
+        AccessPermission accessPermission = createAccessPermission("/api/feature", "GET");
+        AccessPermission accessPermission2 = createAccessPermission("/api/feature2", "POST");
+
         when(accessUserRepository.findAll()).thenReturn(List.of(userErling, userMorten));
+        when(accessPermissionRepository.findAll()).thenReturn(List.of(accessPermission, accessPermission2));
+        when(accessRoleRepository.findAll()).thenReturn(List.of(AccessRole.builder().accessRoleId("ata").name("applikasjonstilgangsadministrator").build()));
 
-        Path mappedOpaJsonFile = tempDir.resolve("output.json");
-
-        dataExporter.setOpaFile(mappedOpaJsonFile.toString());
+        dataExporter.setOpaFile("output.json");
         dataExporter.exportOpaDataToJson();
 
         String expectedJson = IOUtils.toString(getClass().getResourceAsStream("/expected_output_to_opa.json"), UTF_8.name());
+
+        Path mappedOpaJsonFile = Path.of(System.getProperty("java.io.tmpdir"), "/opa/datacatalog/", "output.json");
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode resultNode = mapper.readTree(new String(Files.readAllBytes(mappedOpaJsonFile)));
         JsonNode expectedNode = mapper.readTree(expectedJson);
 
         assertEquals(expectedNode, resultNode);
+    }
+
+    @NotNull
+    private AccessPermission createAccessPermission(String path, String GET) {
+        Feature feature = new Feature();
+        feature.setPath(path);
+
+        AccessPermission accessPermission = new AccessPermission();
+        accessPermission.setAccessRoleId("ata");
+        accessPermission.setOperation(GET);
+        accessPermission.setFeature(feature);
+        return accessPermission;
     }
 
     private AccessUser createMockAccessUserErling() {

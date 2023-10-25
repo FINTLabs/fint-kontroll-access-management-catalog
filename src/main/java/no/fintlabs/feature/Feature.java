@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.accesspermission.AccessPermission;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @ToString
 @Table(name = "feature")
 @Getter
+@Setter
 public class Feature {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
