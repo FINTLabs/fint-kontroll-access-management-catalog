@@ -46,7 +46,7 @@ public class OpaExporter {
         this.accessRoleRepository = accessRoleRepository;
     }
 
-//    @Scheduled(cron = "* * * * * ?") //Every 10 minutes
+    //@Scheduled(cron = "* * * * * ?") //Every 10 minutes
     @Scheduled(cron = "0 */10 * * * ?") //Every 10 minutes
     public void exportOpaDataToJson() throws Exception {
         log.info("Exporting datafile for OPA");
