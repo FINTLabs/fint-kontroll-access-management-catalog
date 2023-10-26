@@ -35,4 +35,4 @@ logging:
 
 opa:
   jsonexport:
-    filename: opaexport.json
+    filename: data.json

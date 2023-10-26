@@ -13,6 +13,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,7 @@ public class OpaExporter {
         this.accessRoleRepository = accessRoleRepository;
     }
 
-    //@Scheduled(cron = "* * * * * ?") //Every 10 minutes
+//    @Scheduled(cron = "* * * * * ?") //Every 10 minutes
     @Scheduled(cron = "0 */10 * * * ?") //Every 10 minutes
     public void exportOpaDataToJson() throws Exception {
         log.info("Exporting datafile for OPA");
@@ -101,20 +103,22 @@ public class OpaExporter {
 
             //TODO: skriv opa json til tmp og hent derfra, får ikke tak i src når man kjører i docker
 
-            addFileToTar(tOut, opaDatafilePath, "datacatalog/data.json");
-            addFileToTar(tOut, "src/main/resources/opa/policy/auth.rego", "auth.rego");
+            addFileToTar(tOut, new FileInputStream(opaDatafilePath), "datacatalog/data.json");
+
+            Resource resource = new ClassPathResource("opa/policy/auth.rego");
+
+            try (InputStream in = resource.getInputStream()) {
+                addFileToTar(tOut, in, "auth.rego");
+            }
         }
     }
 
-    private void addFileToTar(TarArchiveOutputStream tOut, String path, String base) throws IOException {
-        File f = new File(path);
-
-        try (InputStream in = new FileInputStream(f)) {
-            TarArchiveEntry tarEntry = new TarArchiveEntry(f, base);
-            tOut.putArchiveEntry(tarEntry);
-            IOUtils.copy(in, tOut);
-            tOut.closeArchiveEntry();
-        }
+    private void addFileToTar(TarArchiveOutputStream tOut, InputStream in, String base) throws IOException {
+        TarArchiveEntry tarEntry = new TarArchiveEntry(base);
+        tarEntry.setSize(in.available()); // Set the size, important for the tar to know how much to read
+        tOut.putArchiveEntry(tarEntry);
+        IOUtils.copy(in, tOut);
+        tOut.closeArchiveEntry();
     }
 
     private OpaDto mapDataToOpaDto(List<AccessUser> users, List<AccessPermission> permissions, List<AccessRole> roles) {
