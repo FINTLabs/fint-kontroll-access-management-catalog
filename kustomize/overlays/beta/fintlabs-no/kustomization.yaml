@@ -4,8 +4,8 @@ namespace: fintlabs-no
 resources:
   - ../../../base
 commonLabels:
-  app.kubernetes.io/name: fint-kontroll-access-management-catalog
-  app.kubernetes.io/instance: fint-kontroll-access-management-catalog_fintlabs-no
+  app.kubernetes.io/name: fint-kontroll-access-mngmnt-catalog
+  app.kubernetes.io/instance: fint-kontroll-access-mngmnt-catalog_fintlabs-no
   app.kubernetes.io/version: latest
   app.kubernetes.io/component: backend
   app.kubernetes.io/part-of: fint-kontroll
@@ -18,5 +18,5 @@ patches:
         value: "fintlabs-no.kontroll.*"
     target:
       kind: KafkaUserAndAcl
-      name: fint-kontroll-access-management-catalog
+      name: fint-kontroll-access-mngmnt-catalog
 

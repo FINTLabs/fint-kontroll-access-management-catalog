@@ -31,7 +31,7 @@ public class OpaController {
             if (resource.exists()) {
                 log.info("Found OPA bundle, returning");
                 return ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .contentType(MediaType.parseMediaType("application/gzip"))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {

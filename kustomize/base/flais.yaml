@@ -1,11 +1,11 @@
 apiVersion: fintlabs.no/v1alpha1
 kind: Application
 metadata:
-  name: fint-kontroll-access-management-catalog
+  name: fint-kontroll-access-mngmnt-catalog
   labels:
     app.kubernetes.io/component: backend
-    app.kubernetes.io/name: fint-kontroll-access-management-catalog
-    app.kubernetes.io/instance: fint-kontroll-access-management-catalog_fintlabs-no
+    app.kubernetes.io/name: fint-kontroll-access-mngmnt-catalog
+    app.kubernetes.io/instance: fint-kontroll-access-mngmnt-catalog_fintlabs-no
 
 spec:
   #  port: 8080
@@ -42,4 +42,4 @@ spec:
 
   envFrom:
     - configMapRef:
-        name: fint-kontroll-access-management-config
+        name: fint-kontroll-access-mngmnt-config

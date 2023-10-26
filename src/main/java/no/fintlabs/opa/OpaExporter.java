@@ -49,7 +49,7 @@ public class OpaExporter {
     }
 
 //    @Scheduled(cron = "* * * * * ?") //Every 10 minutes
-    @Scheduled(cron = "0 */10 * * * ?") //Every 10 minutes
+    @Scheduled(cron = "0 */4 * * * ?") //Every 10 minutes
     public void exportOpaDataToJson() throws Exception {
         log.info("Exporting datafile for OPA");
         try {
@@ -95,7 +95,7 @@ public class OpaExporter {
             opaBundlePath.getParentFile().mkdirs();
         }
 
-        log.info("Writing OPA data to file: {}", tarFile);
+        log.info("Creating OPA bundle: {}", tarFile);
 
         try (FileOutputStream fOut = new FileOutputStream(tarFile);
              GZIPOutputStream gzOut = new GZIPOutputStream(fOut);
@@ -111,6 +111,8 @@ public class OpaExporter {
                 addFileToTar(tOut, in, "auth.rego");
             }
         }
+
+        log.info("Done creating OPA bundle: {}", tarFile);
     }
 
     private void addFileToTar(TarArchiveOutputStream tOut, InputStream in, String base) throws IOException {
