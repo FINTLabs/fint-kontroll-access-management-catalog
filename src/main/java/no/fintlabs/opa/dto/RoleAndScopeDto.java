@@ -1,4 +1,4 @@
-package no.fintlabs.opa;
+package no.fintlabs.opa.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

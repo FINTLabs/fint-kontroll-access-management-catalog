@@ -1,6 +1,7 @@
-package no.fintlabs.opa;
+package no.fintlabs.opa.mapper;
 
 import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.opa.dto.RoleAuthorizationsDto;
 
 import java.util.HashMap;
 import java.util.List;
