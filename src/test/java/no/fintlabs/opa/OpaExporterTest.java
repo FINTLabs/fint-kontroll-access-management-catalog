@@ -44,6 +44,9 @@ public class OpaExporterTest {
     @Mock
     private AccessRoleRepository accessRoleRepository;
 
+    @Mock
+    private OpaBundleService opaBundleService;
+
     @InjectMocks
     private OpaExporter dataExporter;
 
