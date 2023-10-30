@@ -1,0 +1,11 @@
+INSERT INTO feature (name, path) VALUES ('Brukere', '/api/users');
+INSERT INTO feature (name, path) VALUES ('En bruker', '/api/users/{id}');
+INSERT INTO feature (name, path) VALUES ('Grupper', '/api/roles');
+INSERT INTO feature (name, path) VALUES ('En gruppe', '/api/roles/{id}');
+INSERT INTO feature (name, path) VALUES ('Gruppemedlemmer', '/api/roles/{id}/members');
+INSERT INTO feature (name, path) VALUES ('Ressurser', '/api/resources');
+INSERT INTO feature (name, path) VALUES ('En ressurs', '/api/resources/{id}');
+INSERT INTO feature (name, path) VALUES ('Tildelinger', '/api/assignments');
+INSERT INTO feature (name, path) VALUES ('En tildeling', '/api/assignments/{id}');
+INSERT INTO feature (name, path) VALUES ('Organisasjonsenheter', '/api/orgunits');
+INSERT INTO feature (name, path) VALUES ('En organisasjonsenhet', '/api/orgunits/{id}');
