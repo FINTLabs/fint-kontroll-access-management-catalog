@@ -36,5 +36,6 @@ public class AccessPermissionController {
         }
     }
 
+//    nytt objekt med liste av features, som inneholder liste av operations
     //TODO: getter?
 }
