@@ -28,12 +28,12 @@ public class AccessAssignment {
     @EmbeddedId
     private AccessAssignmentId accessAssignmentId;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("scopeId")
     @JoinColumn(name = "scope_id", nullable = false)
     private Scope scope;

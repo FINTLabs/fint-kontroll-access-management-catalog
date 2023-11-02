@@ -1,12 +1,9 @@
 package no.fintlabs.user;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -43,12 +40,10 @@ public class AccessUser {
     private String email;
     private String managerRef;
 
-    @ElementCollection
-    @CollectionTable(name = "accessuser_orgunit_ids", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "organisation_unit_ids")
-    private List<String> organisationUnitIds;
+    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessUserOrganisationId> organisationUnitIds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "accessUser", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments;
 
     public void addAccessAssignment(AccessAssignment accessAssignment) {

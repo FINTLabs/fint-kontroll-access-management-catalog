@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,14 +26,13 @@ import java.util.List;
 @Getter
 @Setter
 public class OrgUnit {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "org_unit_id", unique = true, nullable = false)
     @JsonProperty("organisationUnitId")
     private String orgUnitId;
+
+    private String name;
+    private String shortName;
 
     @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
     private List<ScopeOrgUnit> scopeOrgUnits;
