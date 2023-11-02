@@ -1,4 +1,4 @@
-package no.fintlabs.scope;
+package no.fintlabs.user;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -19,19 +19,19 @@ import no.fintlabs.orgunit.OrgUnit;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "scope_orgunit")
+@Table(name = "access_user_org_unit")
 @Getter
 @Setter
-public class ScopeOrgUnit {
+public class AccessUserOrgUnit {
     @EmbeddedId
-    private ScopeOrgUnitId scopeOrgUnitId;
+    private AccessUserOrgUnitId accessUserOrgUnitId;
 
-    @ManyToOne(optional = false)
-    @MapsId("scopeId")
-    @JoinColumn(name = "scope_id")
-    private Scope scope;
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    private AccessUser accessUser;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @MapsId("orgUnitId")
     @JoinColumn(name = "org_unit_id")
     private OrgUnit orgUnit;

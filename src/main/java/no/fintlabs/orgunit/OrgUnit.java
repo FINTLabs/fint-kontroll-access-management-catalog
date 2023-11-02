@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.scope.ScopeOrgUnit;
+import no.fintlabs.user.AccessUserOrgUnit;
 
 import java.util.List;
 
@@ -36,4 +37,7 @@ public class OrgUnit {
 
     @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
     private List<ScopeOrgUnit> scopeOrgUnits;
+
+    @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
+    private List<AccessUserOrgUnit> accessUserOrgUnits;
 }

@@ -2,6 +2,7 @@ package no.fintlabs.user;
 
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -10,11 +11,14 @@ public class AccessUserSpecification {
 
     public static Specification<AccessUser> hasOrganisationUnitIds(List<String> orgUnitIds) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            // Join the OrganisationUnitId entity
-            Join<AccessUser, AccessUserOrganisationId> orgUnitIdsJoin = root.join("organisationUnitIds");
+            // Join the AccessUserOrgUnit entity
+            Join<AccessUser, AccessUserOrgUnit> orgUnitJoin = root.join("accessUserOrgUnits");
+
+            // Use the orgUnit association from AccessUserOrgUnit to get the actual orgUnitId
+            Path<String> orgUnitIdPath = orgUnitJoin.get("orgUnit").get("orgUnitId");
 
             // Construct the 'in' clause for the search
-            return orgUnitIdsJoin.get("organisationUnitId").in(orgUnitIds);
+            return orgUnitIdPath.in(orgUnitIds);
         };
     }
 

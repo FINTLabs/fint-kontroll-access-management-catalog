@@ -96,10 +96,10 @@ public class OpaExporterTest {
         AccessAssignment accessAssignmentScope3Erling = createAssignment(3L, "ata", userErling);
         AccessAssignment accessAssignmentScope4Erling = createAssignment(4L, "ata", userErling);
 
-        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null);
-        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null);
-        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null);
-        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null);
+        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null, null);
+        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null, null);
+        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null, null);
+        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null, null);
 
         Scope scopeUser = new Scope(1L, "user", null);
         Scope scopeRole = new Scope(2L, "role", null);
@@ -139,10 +139,10 @@ public class OpaExporterTest {
         AccessAssignment accessAssignmentScope1Morten = createAssignment(1, "aa", userMorten);
         AccessAssignment accessAssignmentScope2Morten = createAssignment(2, "aa", userMorten);
 
-        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null);
-        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null);
-        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null);
-        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null);
+        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null, null);
+        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null, null);
+        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null, null);
+        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null, null);
 
         Scope scopeUser = new Scope(1L, "user", null);
         Scope scopeRole = new Scope(2L, "role", null);

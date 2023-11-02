@@ -18,8 +18,8 @@ class AccessAssignmentMapperTest {
     public void shouldMapToDto() {
         List<ScopeOrgUnit> scopeOrgUnits = new ArrayList<>();
 
-        OrgUnit orgUnit1 = new OrgUnit("198", "orgUnit1", "shortname1", scopeOrgUnits);
-        OrgUnit orgUnit2 = new OrgUnit("153", "orgUnit2", "shortname2", scopeOrgUnits);
+        OrgUnit orgUnit1 = new OrgUnit("198", "orgUnit1", "shortname1", scopeOrgUnits, null);
+        OrgUnit orgUnit2 = new OrgUnit("153", "orgUnit2", "shortname2", scopeOrgUnits, null);
 
         ScopeOrgUnit scopeOrgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "198"), new Scope(), orgUnit1);
         ScopeOrgUnit scopeOrgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "153"), new Scope(), orgUnit2);
