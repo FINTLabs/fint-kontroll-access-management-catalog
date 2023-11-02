@@ -96,10 +96,10 @@ public class OpaExporterTest {
         AccessAssignment accessAssignmentScope3Erling = createAssignment(3L, "ata", userErling);
         AccessAssignment accessAssignmentScope4Erling = createAssignment(4L, "ata", userErling);
 
-        OrgUnit orgUnit198 = new OrgUnit(1L, "198", null);
-        OrgUnit orgUnit153 = new OrgUnit(2L, "153", null);
-        OrgUnit orgUnit6 = new OrgUnit(3L, "6", null);
-        OrgUnit orgUnit1 = new OrgUnit(4L, "1", null);
+        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null);
+        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null);
+        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null);
+        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null);
 
         Scope scopeUser = new Scope(1L, "user", null);
         Scope scopeRole = new Scope(2L, "role", null);
@@ -107,10 +107,10 @@ public class OpaExporterTest {
         Scope scopeOrgUnit = new Scope(4L, "orgunit", null);
 
         List<ScopeOrgUnit> scopeOrgunitsOrg = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getId()), scopeRole, orgUnit153),
-                new ScopeOrgUnit(new ScopeOrgUnitId(3L, orgUnit6.getId()), scopeResource, orgUnit6),
-                new ScopeOrgUnit(new ScopeOrgUnitId(4L, orgUnit1.getId()), scopeOrgUnit, orgUnit1)
+                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
+                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getOrgUnitId()), scopeRole, orgUnit153),
+                new ScopeOrgUnit(new ScopeOrgUnitId(3L, orgUnit6.getOrgUnitId()), scopeResource, orgUnit6),
+                new ScopeOrgUnit(new ScopeOrgUnitId(4L, orgUnit1.getOrgUnitId()), scopeOrgUnit, orgUnit1)
         );
 
         scopeUser.setScopeOrgUnits(scopeOrgunitsOrg);
@@ -139,24 +139,24 @@ public class OpaExporterTest {
         AccessAssignment accessAssignmentScope1Morten = createAssignment(1, "aa", userMorten);
         AccessAssignment accessAssignmentScope2Morten = createAssignment(2, "aa", userMorten);
 
-        OrgUnit orgUnit198 = new OrgUnit(1L, "198", null);
-        OrgUnit orgUnit153 = new OrgUnit(2L, "153", null);
-        OrgUnit orgUnit6 = new OrgUnit(3L, "6", null);
-        OrgUnit orgUnit1 = new OrgUnit(4L, "1", null);
+        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null);
+        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null);
+        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null);
+        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null);
 
         Scope scopeUser = new Scope(1L, "user", null);
         Scope scopeRole = new Scope(2L, "role", null);
 
         List<ScopeOrgUnit> scopeOrgunitsOrg = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit153.getId()), scopeUser, orgUnit153),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit6.getId()), scopeUser, orgUnit6),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit1.getId()), scopeUser, orgUnit1)
+                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
+                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit153.getOrgUnitId()), scopeUser, orgUnit153),
+                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit6.getOrgUnitId()), scopeUser, orgUnit6),
+                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit1.getOrgUnitId()), scopeUser, orgUnit1)
         );
 
         List<ScopeOrgUnit> scopeOrgunitsRole = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit198.getId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getId()), scopeUser, orgUnit153)
+                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
+                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getOrgUnitId()), scopeUser, orgUnit153)
                 );
 
         scopeUser.setScopeOrgUnits(scopeOrgunitsOrg);

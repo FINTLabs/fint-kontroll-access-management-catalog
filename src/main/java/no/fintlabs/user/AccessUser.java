@@ -41,7 +41,7 @@ public class AccessUser {
     private String managerRef;
 
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccessUserOrganisationId> organisationUnitIds = new ArrayList<>();
+    private List<AccessUserOrganisationId> organisationUnitIds;
 
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments;

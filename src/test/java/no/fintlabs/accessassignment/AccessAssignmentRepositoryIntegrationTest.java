@@ -131,7 +131,7 @@ public class AccessAssignmentRepositoryIntegrationTest {
         ScopeOrgUnit scopeOrgUnit = ScopeOrgUnit.builder()
                 .scopeOrgUnitId(ScopeOrgUnitId.builder()
                                         .scopeId(savedOrgUnitScope.getId())
-                                        .orgUnitId(orgUnit.getId())
+                                        .orgUnitId(orgUnit.getOrgUnitId())
                                         .build())
                 .scope(savedOrgUnitScope)
                 .orgUnit(orgUnit)

@@ -46,7 +46,7 @@ public class OrgUnitsConsumerIntegrationTest {
     }
 
     @Test
-    public void shouldConsumeAccessUserAndSave() {
+    public void shouldConsumeOrgUnitsAndSave() {
         OrgUnit orgUnit = OrgUnit.builder()
                 .orgUnitId("123")
                 .build();

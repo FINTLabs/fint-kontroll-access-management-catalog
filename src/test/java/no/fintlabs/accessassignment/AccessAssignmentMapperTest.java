@@ -18,11 +18,11 @@ class AccessAssignmentMapperTest {
     public void shouldMapToDto() {
         List<ScopeOrgUnit> scopeOrgUnits = new ArrayList<>();
 
-        OrgUnit orgUnit1 = new OrgUnit(1L, "orgUnit1", scopeOrgUnits);
-        OrgUnit orgUnit2 = new OrgUnit(2L, "orgUnit2", scopeOrgUnits);
+        OrgUnit orgUnit1 = new OrgUnit("198", "orgUnit1", "shortname1", scopeOrgUnits);
+        OrgUnit orgUnit2 = new OrgUnit("153", "orgUnit2", "shortname2", scopeOrgUnits);
 
-        ScopeOrgUnit scopeOrgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, 1L), new Scope(), orgUnit1);
-        ScopeOrgUnit scopeOrgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, 2L), new Scope(), orgUnit2);
+        ScopeOrgUnit scopeOrgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "198"), new Scope(), orgUnit1);
+        ScopeOrgUnit scopeOrgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "153"), new Scope(), orgUnit2);
 
         scopeOrgUnits.add(scopeOrgUnit1);
         scopeOrgUnits.add(scopeOrgUnit2);
@@ -40,7 +40,7 @@ class AccessAssignmentMapperTest {
         assertEquals(1L, dto.scopeId());
         assertEquals("user1", dto.userId());
         assertEquals(2, dto.orgUnitIds().size());
-        assertEquals("orgUnit1", dto.orgUnitIds().get(0));
-        assertEquals("orgUnit2", dto.orgUnitIds().get(1));
+        assertEquals("198", dto.orgUnitIds().get(0));
+        assertEquals("153", dto.orgUnitIds().get(1));
     }
 }

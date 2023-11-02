@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,7 +44,7 @@ public class AccessUserControllerTest {
 
         Page<AccessUser> accessUserPage = new PageImpl<>(List.of(accessUser));
 
-        when(accessUserRepositoryMock.findAll(any(Pageable.class))).thenReturn(accessUserPage);
+        when(accessUserRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(accessUserPage);
 
         mockMvc.perform(get("/api/accessmanagement/v1/user"))
                 .andExpect(status().isOk())
