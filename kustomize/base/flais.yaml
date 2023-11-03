@@ -19,7 +19,7 @@ spec:
 
   ingress:
     enabled: true
-    basePath: '/beta/fintlabs-no/api/access-management-catalog'
+    basePath: '/beta/fintlabs-no/api/accessmanagement/v1'
     middlewares:
       - fint-kontroll-sso
 
