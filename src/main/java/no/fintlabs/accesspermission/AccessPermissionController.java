@@ -2,9 +2,11 @@ package no.fintlabs.accesspermission;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +28,6 @@ public class AccessPermissionController {
     }
 
     @PostMapping
-
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public AccessPermissionDto createAccessPermission(@RequestBody AccessPermissionDto accessPermissionDto) {
@@ -67,4 +68,24 @@ public class AccessPermissionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting accesspermissions");
         }
     }
+
+    @PutMapping
+    public ResponseEntity<Void> updateAccessPermissions(@RequestBody List<AccessRolePermissionDto> dtos) {
+        log.info("Updating accesspermissions {}", dtos);
+
+        for (AccessRolePermissionDto dto : dtos) {
+            // Get existing permissions for this accessRoleId
+            List<AccessPermission> existingPermissions = accessPermissionRepository.findByAccessRoleId(dto.getAccessRoleId());
+
+            // Delete all existing permissions for this accessRoleId
+            accessPermissionRepository.deleteAll(existingPermissions);
+
+            // Convert DTO to new permissions and save them
+            List<AccessPermission> newPermissions = AccessPermissionMapper.fromAccessRolePermissionDto(dto);
+            accessPermissionRepository.saveAll(newPermissions);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

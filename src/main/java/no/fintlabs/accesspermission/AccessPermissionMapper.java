@@ -1,5 +1,6 @@
 package no.fintlabs.accesspermission;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +53,17 @@ public class AccessPermissionMapper {
         dto.setFeatures(featureDtos);
 
         return dto;
+    }
+
+    public static List<AccessPermission> fromAccessRolePermissionDto(AccessRolePermissionDto dto) {
+        List<AccessPermission> permissions = new ArrayList<>();
+
+        for (AccessPermissionFeatureDto feature : dto.getFeatures()) {
+            for (String operation : feature.getOperations()) {
+                permissions.add(new AccessPermission(dto.getAccessRoleId(), feature.getFeatureId(), operation));
+            }
+        }
+
+        return permissions;
     }
 }
