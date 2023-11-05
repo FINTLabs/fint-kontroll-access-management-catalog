@@ -26,11 +26,11 @@ public class AccessPermissionMapper {
                 .collect(Collectors.groupingBy(AccessPermission::getAccessRoleId));
 
         return groupedByAccessRole.entrySet().stream()
-                .map(entry -> mapSingleAccessRole(entry.getKey(), entry.getValue()))
+                .map(entry -> toAccessRolePermissionDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
-    private static AccessRolePermissionDto mapSingleAccessRole(String accessRoleId, List<AccessPermission> permissions) {
+    public static AccessRolePermissionDto toAccessRolePermissionDto(String accessRoleId, List<AccessPermission> permissions) {
         AccessRolePermissionDto dto = new AccessRolePermissionDto();
         dto.setAccessRoleId(accessRoleId);
 
