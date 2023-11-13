@@ -37,7 +37,8 @@ public class AccessPermissionController {
         log.info("Creating accesspermission {}", accessPermissionDto);
 
         try {
-            AccessPermission accessPermission = accessPermissionRepository.save(AccessPermissionMapper.toAccessPermission(accessPermissionDto));
+            AccessPermission accessPermission =
+                    accessPermissionRepository.save(AccessPermissionMapper.toAccessPermission(accessPermissionDto));
             return AccessPermissionMapper.toDto(accessPermission);
         } catch (Exception e) {
             log.error("Error creating accesspermission {}", accessPermissionDto, e);
@@ -73,20 +74,15 @@ public class AccessPermissionController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateAccessPermissions(@RequestBody List<AccessRolePermissionDto> dtos) {
-        log.info("Updating accesspermissions {}", dtos);
+    public ResponseEntity<Void> updateAccessPermission(@RequestBody AccessRolePermissionDto dto) {
+        log.info("Updating accesspermissions {}", dto);
 
-        for (AccessRolePermissionDto dto : dtos) {
-            // Get existing permissions for this accessRoleId
-            List<AccessPermission> existingPermissions = accessPermissionRepository.findByAccessRoleId(dto.getAccessRoleId());
+        List<AccessPermission> existingPermissions = accessPermissionRepository.findByAccessRoleId(dto.getAccessRoleId());
 
-            // Delete all existing permissions for this accessRoleId
-            accessPermissionRepository.deleteAll(existingPermissions);
+        accessPermissionRepository.deleteAll(existingPermissions);
 
-            // Convert DTO to new permissions and save them
-            List<AccessPermission> newPermissions = AccessPermissionMapper.fromAccessRolePermissionDto(dto);
-            accessPermissionRepository.saveAll(newPermissions);
-        }
+        List<AccessPermission> newPermissions = AccessPermissionMapper.fromAccessRolePermissionDto(dto);
+        accessPermissionRepository.saveAll(newPermissions);
 
         return ResponseEntity.noContent().build();
     }
