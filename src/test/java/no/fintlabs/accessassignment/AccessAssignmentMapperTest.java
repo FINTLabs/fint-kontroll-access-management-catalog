@@ -1,10 +1,12 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.accessassignment.repository.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignmentId;
 import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.orgunit.OrgUnit;
-import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.scope.ScopeOrgUnitId;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.scope.repository.Scope;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnitId;
 import no.fintlabs.user.repository.AccessUser;
 import org.junit.jupiter.api.Test;
 

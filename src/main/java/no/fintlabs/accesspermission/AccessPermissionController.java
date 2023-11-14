@@ -1,6 +1,8 @@
 package no.fintlabs.accesspermission;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.accesspermission.repository.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

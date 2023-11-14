@@ -3,6 +3,8 @@ package no.fintlabs.orgunit;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.kafka.entity.EntityConsumerFactoryService;
 import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

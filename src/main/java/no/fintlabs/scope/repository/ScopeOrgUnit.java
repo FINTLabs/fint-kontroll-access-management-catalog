@@ -1,4 +1,4 @@
-package no.fintlabs.scope;
+package no.fintlabs.scope.repository;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.fintlabs.orgunit.OrgUnit;
+import no.fintlabs.orgunit.repository.OrgUnit;
 
 @Builder
 @Entity

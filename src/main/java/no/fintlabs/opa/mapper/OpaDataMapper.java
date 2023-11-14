@@ -1,6 +1,6 @@
 package no.fintlabs.opa.mapper;
 
-import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermission;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.opa.dto.OpaDto;
 import no.fintlabs.user.repository.AccessUser;

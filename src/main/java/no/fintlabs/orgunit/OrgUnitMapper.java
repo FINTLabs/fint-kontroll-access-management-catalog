@@ -1,6 +1,7 @@
 package no.fintlabs.orgunit;
 
-import no.fintlabs.scope.ScopeOrgUnit;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
 
 import java.util.List;
 

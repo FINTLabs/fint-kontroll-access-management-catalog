@@ -1,6 +1,8 @@
 package no.fintlabs.feature;
 
 import no.fintlabs.SecurityConfig;
+import no.fintlabs.feature.repository.Feature;
+import no.fintlabs.feature.repository.FeatureRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

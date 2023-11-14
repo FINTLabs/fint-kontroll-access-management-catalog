@@ -1,4 +1,4 @@
-package no.fintlabs.orgunit;
+package no.fintlabs.orgunit.repository;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.fintlabs.scope.ScopeOrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
 import no.fintlabs.user.repository.AccessUserOrgUnit;
 
 import java.util.List;

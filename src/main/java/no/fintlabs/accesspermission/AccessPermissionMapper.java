@@ -1,5 +1,7 @@
 package no.fintlabs.accesspermission;
 
+import no.fintlabs.accesspermission.repository.AccessPermission;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -1,8 +1,8 @@
 package no.fintlabs.opa;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.accesspermission.AccessPermission;
-import no.fintlabs.accesspermission.AccessPermissionRepository;
+import no.fintlabs.accesspermission.repository.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.opa.dto.OpaDto;

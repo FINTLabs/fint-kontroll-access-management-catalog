@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.fintlabs.accessassignment.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
 
 import java.util.ArrayList;
 import java.util.List;

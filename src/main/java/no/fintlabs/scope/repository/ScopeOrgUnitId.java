@@ -1,4 +1,4 @@
-package no.fintlabs.accessassignment;
+package no.fintlabs.scope.repository;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,7 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @EqualsAndHashCode
-public class AccessAssignmentId implements Serializable {
+public class ScopeOrgUnitId implements Serializable {
     private Long scopeId;
-    private String accessRoleId;
-    private String userId;
+    private String orgUnitId;
 }

@@ -2,8 +2,8 @@ package no.fintlabs.user;
 
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.orgunit.OrgUnitDto;
-import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
+import no.fintlabs.scope.repository.Scope;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserScopesDto;
 import no.fintlabs.user.dto.UserRoleDto;

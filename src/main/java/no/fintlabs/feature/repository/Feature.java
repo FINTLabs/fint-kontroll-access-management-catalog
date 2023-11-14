@@ -1,4 +1,4 @@
-package no.fintlabs.feature;
+package no.fintlabs.feature.repository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import no.fintlabs.accesspermission.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermission;
 
 import java.util.List;
 

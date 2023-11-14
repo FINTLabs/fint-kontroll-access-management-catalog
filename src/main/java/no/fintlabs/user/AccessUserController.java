@@ -1,6 +1,7 @@
 package no.fintlabs.user;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import no.fintlabs.user.repository.AccessUserSearchCreator;
@@ -13,6 +14,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +50,21 @@ public class AccessUserController {
             Page<AccessUser> accessUsers = accessUserRepository.findAll(spec, pageable == null ? Pageable.unpaged() : pageable);
             return ResponseEntity.ok(mapAccessUserResponse(accessUsers));
         } catch (Exception e) {
-            log.error("Error getting all users{}", e);
+            log.error("Error getting all users", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting users");
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<AccessUserDto> getUser(@PathVariable("userId") String userId) {
+        log.info("Fetching user with userId {}", userId);
+
+        try {
+            AccessUser accessUser = accessUserRepository.findById(userId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+            return ResponseEntity.ok(AccessUserMapper.toDto(accessUser));
+        } catch (Exception e) {
+            log.error("Error getting user", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting users");
         }
     }

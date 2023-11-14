@@ -1,5 +1,7 @@
 package no.fintlabs.orgunit;
 
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,8 @@
 package no.fintlabs.accesspermission;
 
 import no.fintlabs.SecurityConfig;
+import no.fintlabs.accesspermission.repository.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

@@ -1,9 +1,9 @@
 package no.fintlabs.user;
 
-import no.fintlabs.accessassignment.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.orgunit.OrgUnitDto;
 import no.fintlabs.orgunit.OrgUnitMapper;
-import no.fintlabs.scope.ScopeOrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserScopesDto;
 import no.fintlabs.user.dto.UserRoleDto;

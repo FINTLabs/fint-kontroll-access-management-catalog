@@ -1,13 +1,16 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.accessassignment.repository.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignmentId;
+import no.fintlabs.accessassignment.repository.AccessAssignmentRepository;
 import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.orgunit.OrgUnit;
-import no.fintlabs.orgunit.OrgUnitRepository;
-import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.scope.ScopeOrgUnitId;
-import no.fintlabs.scope.ScopeOrgUnitRepository;
-import no.fintlabs.scope.ScopeRepository;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
+import no.fintlabs.scope.repository.Scope;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnitId;
+import no.fintlabs.scope.repository.ScopeOrgUnitRepository;
+import no.fintlabs.scope.repository.ScopeRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.jetbrains.annotations.NotNull;

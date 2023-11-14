@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import no.fintlabs.accessassignment.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
 
 import java.util.List;
 

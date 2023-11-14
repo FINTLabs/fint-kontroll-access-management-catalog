@@ -1,5 +1,7 @@
 package no.fintlabs.feature;
 
+import no.fintlabs.feature.repository.Feature;
+
 public class FeatureMapper {
 
     public static FeatureDto toDto(Feature feature) {

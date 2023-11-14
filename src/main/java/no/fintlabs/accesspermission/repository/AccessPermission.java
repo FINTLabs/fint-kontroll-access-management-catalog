@@ -1,4 +1,4 @@
-package no.fintlabs.accesspermission;
+package no.fintlabs.accesspermission.repository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.feature.Feature;
+import no.fintlabs.feature.repository.Feature;
 
 @Builder
 @Entity

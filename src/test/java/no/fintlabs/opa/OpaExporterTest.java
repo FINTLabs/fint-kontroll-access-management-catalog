@@ -1,16 +1,16 @@
 package no.fintlabs.opa;
 
-import no.fintlabs.accessassignment.AccessAssignment;
-import no.fintlabs.accessassignment.AccessAssignmentId;
-import no.fintlabs.accesspermission.AccessPermission;
-import no.fintlabs.accesspermission.AccessPermissionRepository;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignmentId;
+import no.fintlabs.accesspermission.repository.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
-import no.fintlabs.feature.Feature;
-import no.fintlabs.orgunit.OrgUnit;
-import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.scope.ScopeOrgUnitId;
+import no.fintlabs.feature.repository.Feature;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.scope.repository.Scope;
+import no.fintlabs.scope.repository.ScopeOrgUnit;
+import no.fintlabs.scope.repository.ScopeOrgUnitId;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.apache.commons.io.IOUtils;

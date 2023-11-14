@@ -1,5 +1,7 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.accessassignment.repository.AccessAssignment;
+
 import java.util.List;
 
 public class AccessAssignmentMapper {

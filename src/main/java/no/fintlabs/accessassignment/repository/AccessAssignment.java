@@ -1,4 +1,4 @@
-package no.fintlabs.accessassignment;
+package no.fintlabs.accessassignment.repository;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.scope.Scope;
+import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.repository.AccessUser;
 
 @Builder

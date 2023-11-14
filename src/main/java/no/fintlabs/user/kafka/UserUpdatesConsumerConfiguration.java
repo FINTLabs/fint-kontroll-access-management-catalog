@@ -3,7 +3,7 @@ package no.fintlabs.user.kafka;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.kafka.entity.EntityConsumerFactoryService;
 import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
-import no.fintlabs.orgunit.OrgUnitRepository;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserOrgUnit;
 import no.fintlabs.user.repository.AccessUserOrgUnitId;
@@ -37,7 +37,7 @@ public class UserUpdatesConsumerConfiguration {
                 .build();
 
         return entityConsumerFactoryService.createFactory(AccessUserKafka.class, (ConsumerRecord<String, AccessUserKafka> consumerRecord) -> {
-                    log.info("Got accessuser update, saving: " + consumerRecord.value());
+                    log.info("UserConsumer: Got accessuser update, saving: " + consumerRecord.value());
 
                     AccessUserKafka accessUserKafka = consumerRecord.value();
                     AccessUser accessUser = AccessUserKafkaMapper.toAccessUser(accessUserKafka);
@@ -47,7 +47,6 @@ public class UserUpdatesConsumerConfiguration {
                         accessUserKafka.getOrganisationUnitIds().forEach(orgUnitId -> orgUnitRepository.findByOrgUnitId(orgUnitId)
                                 .ifPresentOrElse(foundOrgUnit -> {
                                     log.info("Found orgUnit for orgUnitId: " + orgUnitId);
-                                    log.info("Setting vals: " + accessUserKafka.getResourceId() + " " + foundOrgUnit.getOrgUnitId());
                                     AccessUserOrgUnit accessUserOrgUnit = new AccessUserOrgUnit();
                                     accessUserOrgUnit.setAccessUserOrgUnitId(new AccessUserOrgUnitId());
                                     accessUserOrgUnit.getAccessUserOrgUnitId().setUserId(accessUserKafka.getResourceId());

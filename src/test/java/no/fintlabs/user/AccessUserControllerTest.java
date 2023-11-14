@@ -1,13 +1,6 @@
 package no.fintlabs.user;
 
 import no.fintlabs.SecurityConfig;
-import no.fintlabs.accessassignment.AccessAssignment;
-import no.fintlabs.accessassignment.AccessAssignmentId;
-import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.orgunit.OrgUnit;
-import no.fintlabs.scope.Scope;
-import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.scope.ScopeOrgUnitId;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +15,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -78,39 +73,7 @@ public class AccessUserControllerTest {
                 .userName("morten.solberg@vigoiks.no")
                 .firstName("Morten")
                 .lastName("Solberg")
-                .accessAssignments(List.of(AccessAssignment.builder()
-                        .accessAssignmentId(AccessAssignmentId.builder()
-                                .scopeId(1L)
-                                .userId("1")
-                                .accessRoleId("ata")
-                                .build())
-                        .scope(Scope.builder()
-                                .objectType("orgunit")
-                                .scopeOrgUnits(List.of(ScopeOrgUnit.builder()
-                                        .scopeOrgUnitId(ScopeOrgUnitId.builder()
-                                                .scopeId(1L)
-                                                .orgUnitId("198")
-                                                .build())
-                                        .orgUnit(OrgUnit.builder()
-                                                .orgUnitId("198")
-                                                .name("OrgUnit1")
-                                                .build())
-                                        .build(), ScopeOrgUnit.builder()
-                                        .scopeOrgUnitId(ScopeOrgUnitId.builder()
-                                                .scopeId(1L)
-                                                .orgUnitId("153")
-                                                .build())
-                                        .orgUnit(OrgUnit.builder()
-                                                .orgUnitId("153")
-                                                .name("OrgUnit2")
-                                                .build())
-                                        .build()))
-                                .build())
-                        .accessRole(AccessRole.builder()
-                                .accessRoleId("ata")
-                                .name("Applikasjonstilgangsadministrator")
-                                .build())
-                        .build()))
+                .accessAssignments(Collections.singletonList(AccessAssignmentMother.createDefaultAccessAssignment()))
                 .build();
 
         Page<AccessUser> accessUserPage = new PageImpl<>(List.of(accessUser));
@@ -142,5 +105,37 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath(scopes + "[0].orgUnits").isArray())
                 .andExpect(jsonPath(scopes + "[0].orgUnits.[0].name").value("OrgUnit1"))
                 .andExpect(jsonPath(scopes + "[0].orgUnits.[0].orgUnitId").value("198"));
+    }
+
+    @WithMockUser(value = "spring")
+    @Test
+    public void shouldGetUserWithAssignments() throws Exception {
+        AccessUser accessUser = AccessUser.builder()
+                .resourceId("1")
+                .userId("1")
+                .userName("morten.solberg@vigoiks.no")
+                .firstName("Morten")
+                .lastName("Solberg")
+                .accessAssignments(Collections.singletonList(AccessAssignmentMother.createDefaultAccessAssignment()))
+                .build();
+
+        when(accessUserRepositoryMock.findById("1")).thenReturn(Optional.ofNullable(accessUser));
+
+        mockMvc.perform(get("/api/accessmanagement/v1/user/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resourceId").value("1"))
+                .andExpect(jsonPath("$.userId").value("1"))
+                .andExpect(jsonPath("$.userName").value("morten.solberg@vigoiks.no"))
+                .andExpect(jsonPath("$.firstName").value("Morten"))
+                .andExpect(jsonPath("$.lastName").value("Solberg"))
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0].roleId").value("ata"))
+                .andExpect(jsonPath("$.roles[0].roleName").value("Applikasjonstilgangsadministrator"))
+                .andExpect(jsonPath("$.roles[0].scopes").isArray())
+                .andExpect(jsonPath("$.roles[0].scopes[0].scopeId").value(1L))
+                .andExpect(jsonPath("$.roles[0].scopes[0].objectType").value("orgunit"))
+                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits").isArray())
+                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].name").value("OrgUnit1"))
+                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].orgUnitId").value("198"));
     }
 }

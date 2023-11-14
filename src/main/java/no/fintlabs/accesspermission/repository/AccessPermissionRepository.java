@@ -1,4 +1,4 @@
-package no.fintlabs.accesspermission;
+package no.fintlabs.accesspermission.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

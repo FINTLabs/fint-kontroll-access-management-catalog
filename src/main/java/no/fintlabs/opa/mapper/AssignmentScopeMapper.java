@@ -1,6 +1,6 @@
 package no.fintlabs.opa.mapper;
 
-import no.fintlabs.accessassignment.AccessAssignment;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.opa.dto.AssignmentScopeDto;
 
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package no.fintlabs.scope;
+package no.fintlabs.scope.repository;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,9 +1,11 @@
 package no.fintlabs.feature;
 
-import no.fintlabs.accesspermission.AccessPermission;
-import no.fintlabs.accesspermission.AccessPermissionRepository;
+import no.fintlabs.accesspermission.repository.AccessPermission;
+import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
+import no.fintlabs.feature.repository.Feature;
+import no.fintlabs.feature.repository.FeatureRepository;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
