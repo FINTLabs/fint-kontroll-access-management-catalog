@@ -1,4 +1,4 @@
-package no.fintlabs.user;
+package no.fintlabs.user.repository;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

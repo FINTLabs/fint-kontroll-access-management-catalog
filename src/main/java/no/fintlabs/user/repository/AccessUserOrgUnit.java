@@ -1,4 +1,4 @@
-package no.fintlabs.user;
+package no.fintlabs.user.repository;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

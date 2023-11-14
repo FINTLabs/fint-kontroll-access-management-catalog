@@ -1,4 +1,4 @@
-package no.fintlabs.user;
+package no.fintlabs.user.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

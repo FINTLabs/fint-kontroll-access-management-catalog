@@ -1,9 +1,14 @@
-package no.fintlabs.user;
+package no.fintlabs.user.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.kafka.entity.EntityConsumerFactoryService;
 import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
 import no.fintlabs.orgunit.OrgUnitRepository;
+import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.repository.AccessUserOrgUnit;
+import no.fintlabs.user.repository.AccessUserOrgUnitId;
+import no.fintlabs.user.repository.AccessUserOrgUnitRepository;
+import no.fintlabs.user.repository.AccessUserRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

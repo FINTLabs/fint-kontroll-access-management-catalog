@@ -1,10 +1,11 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.orgunit.OrgUnit;
 import no.fintlabs.scope.Scope;
 import no.fintlabs.scope.ScopeOrgUnit;
 import no.fintlabs.scope.ScopeOrgUnitId;
-import no.fintlabs.user.AccessUser;
+import no.fintlabs.user.repository.AccessUser;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ class AccessAssignmentMapperTest {
         scope.setId(1L);
         scope.setScopeOrgUnits(scopeOrgUnits);
 
-        AccessAssignment accessAssignment = new AccessAssignment(new AccessAssignmentId(1L, "role1", "user1"), new AccessUser(), scope);
+        AccessAssignment accessAssignment = new AccessAssignment(new AccessAssignmentId(1L, "role1", "user1"), new AccessUser(), scope, new AccessRole());
 
         AccessAssignmentDto dto = AccessAssignmentMapper.toDto(accessAssignment);
 

@@ -1,5 +1,6 @@
 package no.fintlabs.accessassignment;
 
+import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.orgunit.OrgUnit;
 import no.fintlabs.orgunit.OrgUnitRepository;
 import no.fintlabs.scope.Scope;
@@ -7,8 +8,8 @@ import no.fintlabs.scope.ScopeOrgUnit;
 import no.fintlabs.scope.ScopeOrgUnitId;
 import no.fintlabs.scope.ScopeOrgUnitRepository;
 import no.fintlabs.scope.ScopeRepository;
-import no.fintlabs.user.AccessUser;
-import no.fintlabs.user.AccessUserRepository;
+import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.repository.AccessUserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,10 @@ public class AccessAssignmentRepositoryIntegrationTest {
                                             .build())
                 .accessUser(savedAccessUser)
                 .scope(savedOrgUnitScope)
+                .accessRole(AccessRole.builder()
+                                    .accessRoleId("ata")
+                                    .name("Applikasjonstilgangsadministrator")
+                                    .build())
                 .build();
 
         return accessAssignmentRepository.save(accessAssignment);

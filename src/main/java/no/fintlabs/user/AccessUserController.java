@@ -1,6 +1,9 @@
 package no.fintlabs.user;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.repository.AccessUserRepository;
+import no.fintlabs.user.repository.AccessUserSearchCreator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,8 +42,7 @@ public class AccessUserController {
                                                            @PageableDefault(size = 100) Pageable pageable) {
         log.info("Fetching all users with pagination {}", pageable);
 
-        Specification<AccessUser> spec =
-                createSearchSpecificationIfAny(name, orgUnitIds, userType);
+        Specification<AccessUser> spec = AccessUserSearchCreator.createAccessUserSearch(name, orgUnitIds, userType);
 
         try {
             Page<AccessUser> accessUsers = accessUserRepository.findAll(spec, pageable == null ? Pageable.unpaged() : pageable);
@@ -64,20 +66,4 @@ public class AccessUserController {
         return response;
     }
 
-    private Specification<AccessUser> createSearchSpecificationIfAny(String name, List<String> orgUnitIds, String userType) {
-        Specification<AccessUser> spec = Specification.where(null);
-
-        if(name != null && !name.trim().isEmpty()) {
-            spec = spec.and(AccessUserSpecification.nameContains(name));
-        }
-
-        if (orgUnitIds != null && !orgUnitIds.isEmpty()) {
-            spec = spec.and(AccessUserSpecification.hasOrganisationUnitIds(orgUnitIds));
-        }
-
-        if (userType != null && !userType.trim().isEmpty()) {
-            spec = spec.and(AccessUserSpecification.hasUserType(userType));
-        }
-        return spec;
-    }
 }

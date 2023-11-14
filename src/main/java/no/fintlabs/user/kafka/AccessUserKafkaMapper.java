@@ -1,4 +1,6 @@
-package no.fintlabs.user;
+package no.fintlabs.user.kafka;
+
+import no.fintlabs.user.repository.AccessUser;
 
 public class AccessUserKafkaMapper {
 

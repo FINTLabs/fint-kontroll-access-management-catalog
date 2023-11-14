@@ -13,8 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.scope.Scope;
-import no.fintlabs.user.AccessUser;
+import no.fintlabs.user.repository.AccessUser;
 
 @Builder
 @Entity
@@ -33,8 +34,13 @@ public class AccessAssignment {
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @MapsId("scopeId")
     @JoinColumn(name = "scope_id", nullable = false)
     private Scope scope;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @MapsId("accessRoleId")
+    @JoinColumn(name = "access_role_id")
+    private AccessRole accessRole;
 }

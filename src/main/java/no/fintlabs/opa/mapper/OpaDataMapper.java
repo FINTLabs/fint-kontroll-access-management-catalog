@@ -3,7 +3,7 @@ package no.fintlabs.opa.mapper;
 import no.fintlabs.accesspermission.AccessPermission;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.opa.dto.OpaDto;
-import no.fintlabs.user.AccessUser;
+import no.fintlabs.user.repository.AccessUser;
 
 import java.util.List;
 

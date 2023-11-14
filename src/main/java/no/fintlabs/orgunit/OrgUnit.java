@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.fintlabs.scope.ScopeOrgUnit;
-import no.fintlabs.user.AccessUserOrgUnit;
+import no.fintlabs.user.repository.AccessUserOrgUnit;
 
 import java.util.List;
 

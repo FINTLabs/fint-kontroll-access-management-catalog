@@ -4,7 +4,7 @@ import no.fintlabs.accessassignment.AccessAssignment;
 import no.fintlabs.opa.dto.AssignmentScopeDto;
 import no.fintlabs.opa.dto.RoleAndScopeDto;
 import no.fintlabs.opa.dto.RolesAndScopesDto;
-import no.fintlabs.user.AccessUser;
+import no.fintlabs.user.repository.AccessUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -8,8 +8,8 @@ import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.orgunit.OrgUnitRepository;
 import no.fintlabs.scope.Scope;
 import no.fintlabs.scope.ScopeRepository;
-import no.fintlabs.user.AccessUser;
-import no.fintlabs.user.AccessUserRepository;
+import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.repository.AccessUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,15 +49,20 @@ public class AccessAssignmentController {
         log.info("Assigning access to user with data {}", accessAssignmentDto);
 
         try {
+            // opa må tas i bruk
+            // sjekk innlogget brukers rolle
             AccessUser accessUser = accessUserRepository.findById(accessAssignmentDto.userId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
 
+            //sjekk at rolle er lik innlogget brukers rolle
             AccessRole accessRole = accessRoleRepository.findById(accessAssignmentDto.accessRoleId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
 
+            // sjekk at bruker har dette scopet
             Scope scope = scopeRepository.findById(accessAssignmentDto.scopeId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Scope does not exist"));
 
+            // sjekk om bruker har tilgang på orgunit
             accessAssignmentDto.orgUnitIds().forEach(orgUnitId -> orgUnitRepository.findByOrgUnitId(orgUnitId)
                     .ifPresentOrElse(orgUnit -> accessAssignmentService.createScopeOrgUnitRelation(orgUnit, scope),
                                      () -> log.error("OrgUnit with id {} does not exist, not saving", orgUnitId)));

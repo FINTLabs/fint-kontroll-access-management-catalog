@@ -1,4 +1,4 @@
-package no.fintlabs.user;
+package no.fintlabs.user.repository;
 
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;

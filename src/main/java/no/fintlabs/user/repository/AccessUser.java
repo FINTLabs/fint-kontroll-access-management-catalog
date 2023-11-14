@@ -1,4 +1,4 @@
-package no.fintlabs.user;
+package no.fintlabs.user.repository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -39,11 +39,13 @@ public class AccessUser {
     private String email;
     private String managerRef;
 
+    @Builder.Default
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
-    private List<AccessUserOrgUnit> accessUserOrgUnits;
+    private List<AccessUserOrgUnit> accessUserOrgUnits = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
-    private List<AccessAssignment> accessAssignments;
+    private List<AccessAssignment> accessAssignments = new ArrayList<>();
 
     public void addAccessAssignment(AccessAssignment accessAssignment) {
         if (accessAssignments == null) {

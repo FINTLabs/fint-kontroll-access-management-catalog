@@ -1,5 +1,7 @@
 package no.fintlabs.user;
 
+import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.repository.AccessUserRepository;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
