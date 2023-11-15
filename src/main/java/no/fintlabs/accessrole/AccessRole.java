@@ -1,5 +1,6 @@
 package no.fintlabs.accessrole;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ public class AccessRole {
 
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "accessRole", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AccessAssignment> accessAssignments;
 }
