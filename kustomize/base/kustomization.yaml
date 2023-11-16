@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - flais.yaml
   - config-map.yaml
-  - fint-environment.yaml
 commonLabels:
   app.kubernetes.io/version: "latest"
   app.kubernetes.io/part-of: fint-kontroll
