@@ -36,7 +36,7 @@ public class OpaExporter {
         this.opaBundleService = opaBundleService;
     }
 
-    @Scheduled(cron = "0 */4 * * * ?") //Every 10 minutes
+    @Scheduled(cron = "0 */5 * * * ?") //Every 5 minutes
     public void exportOpaDataToJson() throws Exception {
         log.info("Exporting datafile for OPA");
         try {

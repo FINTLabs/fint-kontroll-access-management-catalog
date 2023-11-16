@@ -13,6 +13,9 @@ spec:
   image: ghcr.io/fintlabs/fint-kontroll-access-management-catalog:latest
   imagePullPolicy: Always
 
+#  onePassword:
+#    item-path: 'test'
+
   url:
     hostname: 'kontroll.vigoiks.no'
     basePath: '/beta/fintlabs-no'
@@ -43,3 +46,5 @@ spec:
   envFrom:
     - configMapRef:
         name: fint-kontroll-access-mngmnt-config
+    - configMapRef:
+        name: fint-environment

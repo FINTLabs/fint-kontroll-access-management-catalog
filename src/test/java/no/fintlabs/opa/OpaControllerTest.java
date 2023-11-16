@@ -1,14 +1,13 @@
 package no.fintlabs.opa;
 
-import no.fintlabs.SecurityConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OpaController.class)
-@Import({SecurityConfig.class})
 class OpaControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -24,7 +22,11 @@ class OpaControllerTest {
     @MockBean
     private OpaBundleService opaBundleService;
 
-    @WithMockUser(value = "spring")
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new OpaController(opaBundleService)).build();
+    }
+
     @Test
     public void shouldGetOkForOpaBundle() throws Exception {
         Resource urlResource = mock(Resource.class);
@@ -39,7 +41,6 @@ class OpaControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @WithMockUser(value = "spring")
     @Test
     public void shouldGet404IfNotFound() throws Exception {
         Resource urlResource = mock(Resource.class);

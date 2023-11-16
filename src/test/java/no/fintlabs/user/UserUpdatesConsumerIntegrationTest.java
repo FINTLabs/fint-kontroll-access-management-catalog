@@ -12,6 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
@@ -46,9 +47,11 @@ public class UserUpdatesConsumerIntegrationTest {
         registry.add("fint.kafka.topic.domain-context", () -> topicDomainContext);
         registry.add("fint.kafka.application-id", () -> applicationId);
         registry.add("opa.jsonexport.filename", () -> "");
+        registry.add("fint.kontroll.opa.url", () -> "");
     }
 
     @Test
+    @WithMockUser(value = "spring")
     public void shouldConsumeAccessUserAndSave() throws InterruptedException {
         AccessUser accessUser = AccessUser.builder()
                 .resourceId("123")

@@ -1,15 +1,15 @@
 package no.fintlabs.feature;
 
-import no.fintlabs.SecurityConfig;
 import no.fintlabs.feature.repository.Feature;
 import no.fintlabs.feature.repository.FeatureRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FeatureController.class)
-@Import({SecurityConfig.class})
 public class FeatureControllerTest {
 
     @Autowired
@@ -28,7 +27,11 @@ public class FeatureControllerTest {
     @MockBean
     private FeatureRepository featureRepositoryMock;
 
-    @WithMockUser(value = "spring")
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new FeatureController(featureRepositoryMock)).build();
+    }
+
     @Test
     public void shouldGetAllFeatures() throws Exception {
         Feature feature = Feature.builder()

@@ -3,8 +3,9 @@ package no.fintlabs.opa;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,13 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/accessmanagement/v1/opabundle")
 public class OpaController {
 
-    @Autowired
-    private OpaBundleService opaBundleService;
+    private final OpaBundleService opaBundleService;
+
+    @Value("${fint.kontroll.authorization.opa-key:dummykey}")
+    private String apiKey;
+
+    @Value("${fint.relations.default-base-url:localhost}")
+    private String baseUrl;
+
+    public OpaController(OpaBundleService opaBundleService) {
+        this.opaBundleService = opaBundleService;
+    }
 
     @Operation(summary = "Hent OPA bundle", description = "Hent OPA bundle")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(produces = "application/gzip")
-    public ResponseEntity<Resource> getOpaBundle() throws Exception {
+    public ResponseEntity<Resource> getOpaBundle(HttpServletRequest request) throws Exception {
+        log.info("THE BASE URL IS: {}", baseUrl);
+        // TODO: Enable
+        /*if (!isValidApiKey(request)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }*/
+
         try {
             Resource resource = opaBundleService.getOpaBundleFile();
 
@@ -46,6 +62,12 @@ public class OpaController {
         }
     }
 
+    private boolean isValidApiKey(HttpServletRequest request) {
+        final String apiKeyHeaderName = "X-Api-Key";
+
+        String apiKeyFromOpa = request.getHeader(apiKeyHeaderName) != null ? request.getHeader(apiKeyHeaderName) : "";
+        return apiKey.equals(apiKeyFromOpa);
+    }
 
 
 }

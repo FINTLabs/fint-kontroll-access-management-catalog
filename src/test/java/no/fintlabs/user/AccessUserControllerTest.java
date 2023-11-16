@@ -1,19 +1,19 @@
 package no.fintlabs.user;
 
-import no.fintlabs.SecurityConfig;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccessUserController.class)
-@Import({SecurityConfig.class})
 public class AccessUserControllerTest {
 
     @Autowired
@@ -35,7 +34,15 @@ public class AccessUserControllerTest {
     @MockBean
     private AccessUserRepository accessUserRepositoryMock;
 
-    @WithMockUser(value = "spring")
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new AccessUserController(accessUserRepositoryMock))
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+
+    }
+
     @Test
     public void shouldGetAllUsersNoAssignments() throws Exception {
         AccessUser accessUser = AccessUser.builder()
@@ -48,9 +55,16 @@ public class AccessUserControllerTest {
 
         Page<AccessUser> accessUserPage = new PageImpl<>(List.of(accessUser));
 
-        when(accessUserRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(accessUserPage);
+        when(accessUserRepositoryMock.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(accessUserPage);
 
-        mockMvc.perform(get("/api/accessmanagement/v1/user"))
+        mockMvc.perform(get("/api/accessmanagement/v1/user")
+                                .param("page", "0")
+                                .param("size", "10")
+                                .param("sort", "userName,asc")
+                                .param("name", "") // Add other expected parameters
+                                .param("orgunitid", "") // If expecting a list, you might need to handle this differently
+                                .param("usertype", ""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.users").isArray())
@@ -64,7 +78,7 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.users[0].lastName").value("Solberg"));
     }
 
-    @WithMockUser(value = "spring")
+
     @Test
     public void shouldGetAllUsersWithAssignments() throws Exception {
         AccessUser accessUser = AccessUser.builder()
@@ -84,7 +98,10 @@ public class AccessUserControllerTest {
         String roles = user + ".roles[0]";
         String scopes = roles + ".scopes";
 
-        mockMvc.perform(get("/api/accessmanagement/v1/user"))
+        mockMvc.perform(get("/api/accessmanagement/v1/user")
+                                .param("page", "0")
+                                .param("size", "10")
+                                .param("sort", "userName,asc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.users").isArray())
@@ -107,7 +124,6 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath(scopes + "[0].orgUnits.[0].orgUnitId").value("198"));
     }
 
-    @WithMockUser(value = "spring")
     @Test
     public void shouldGetUserWithAssignments() throws Exception {
         AccessUser accessUser = AccessUser.builder()
@@ -138,4 +154,5 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].name").value("OrgUnit1"))
                 .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].orgUnitId").value("198"));
     }
+
 }

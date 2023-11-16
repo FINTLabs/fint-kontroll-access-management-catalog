@@ -1,16 +1,15 @@
 package no.fintlabs.accesspermission;
 
-import no.fintlabs.SecurityConfig;
 import no.fintlabs.accesspermission.repository.AccessPermission;
 import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccessPermissionController.class)
-@Import({SecurityConfig.class})
 public class AccessPermissionControllerTest {
 
     @Autowired
@@ -29,7 +27,11 @@ public class AccessPermissionControllerTest {
     @MockBean
     private AccessPermissionRepository accessPermissionRepositoryMock;
 
-    @WithMockUser(value = "spring")
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new AccessPermissionController(accessPermissionRepositoryMock)).build();
+    }
+
     @Test
     public void shouldCreateAccessPermission() throws Exception {
         AccessPermissionDto inputAccessPermissionDto = new AccessPermissionDto("ata", 1L, "GET");
