@@ -45,6 +45,6 @@ spec:
 
   envFrom:
     - configMapRef:
-        name: fint-kontroll-access-mngmnt-config
-    - configMapRef:
         name: fint-environment
+    - configMapRef:
+        name: fint-kontroll-access-mngmnt-config
