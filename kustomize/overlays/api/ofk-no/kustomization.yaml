@@ -28,6 +28,9 @@ patches:
       - op: replace
         path: "/spec/url/basePath"
         value: "/ofk-no"
+      - op: replace
+        path: "/spec/env/2/value"
+        value: "ofk.no"
     target:
       kind: Application
       name: fint-kontroll-access-mngmnt-catalog
