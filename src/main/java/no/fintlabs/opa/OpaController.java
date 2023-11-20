@@ -22,7 +22,7 @@ public class OpaController {
 
     private final OpaBundleService opaBundleService;
 
-    @Value("${fint.kontroll.authorization.opa-key:dummykey}")
+    @Value("${fint.kontroll.opa.api-key:dummykey}")
     private String apiKey;
 
     @Value("${fint.relations.default-base-url:localhost}")
@@ -36,7 +36,7 @@ public class OpaController {
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(produces = "application/gzip")
     public ResponseEntity<Resource> getOpaBundle(HttpServletRequest request) throws Exception {
-        log.info("THE BASE URL IS: {}", baseUrl);
+        log.info("THE BASE URL IS: {}, apiKey is: {}", baseUrl, apiKey);
         // TODO: Enable
         /*if (!isValidApiKey(request)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -35,3 +35,11 @@ patches:
       kind: Application
       name: fint-kontroll-access-mngmnt-catalog
 
+  - patch: |-
+      - op: replace
+        path: "/spec/itemPath"
+        value: "vaults/aks-api-vault/items/kontroll-access-management-catalog-ofk-no"
+    target:
+      kind: OnePasswordItem
+      name: fint-kontroll-access-mngmnt-secrets
+

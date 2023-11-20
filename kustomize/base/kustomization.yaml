@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - flais.yaml
   - config-map.yaml
+  - onePassword.yaml
 commonLabels:
   app.kubernetes.io/version: "latest"
   app.kubernetes.io/part-of: fint-kontroll

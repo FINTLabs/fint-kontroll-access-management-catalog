@@ -12,3 +12,12 @@ commonLabels:
   fintlabs.no/team: bas
   fintlabs.no/org-id: fintlabs.no
 
+patches:
+  - patch: |-
+      - op: replace
+        path: "/spec/itemPath"
+        value: "vaults/aks-beta-vault/items/kontroll-access-management-catalog-beta-fintlabs-no"
+    target:
+      kind: OnePasswordItem
+      name: fint-kontroll-access-mngmnt-secrets
+

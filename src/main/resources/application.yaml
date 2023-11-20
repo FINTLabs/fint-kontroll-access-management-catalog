@@ -7,6 +7,7 @@ fint:
   kontroll:
     opa:
       url: http://localhost:8181/v1/data/accessmanagement
+      api-key: 'changeme'
     authorization:
       authorized-role: 'https://role-catalog.vigoiks.no/vigo/kontroll/user'
       authorized-admin-role: 'https://role-catalog.vigoiks.no/vigo/kontroll/admin'
