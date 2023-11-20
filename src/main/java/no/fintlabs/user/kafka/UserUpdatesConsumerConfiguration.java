@@ -33,7 +33,7 @@ public class UserUpdatesConsumerConfiguration {
     ) {
         EntityTopicNameParameters entityTopicNameParameters = EntityTopicNameParameters
                 .builder()
-                .resource("user")
+                .resource("kontrolluser")
                 .build();
 
         return entityConsumerFactoryService.createFactory(AccessUserKafka.class, (ConsumerRecord<String, AccessUserKafka> consumerRecord) -> {

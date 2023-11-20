@@ -62,7 +62,7 @@ public class UserUpdatesConsumerIntegrationTest {
                 .build();
 
         KafkaTemplate<String, AccessUser> kafkaTemplate = createKafkaTemplate(kafka.getBootstrapServers());
-        kafkaTemplate.send(topicOrgId + "." + topicDomainContext + ".entity.user", "testKey", accessUser);
+        kafkaTemplate.send(topicOrgId + "." + topicDomainContext + ".entity.kontrolluser", "testKey", accessUser);
 
         verify(accessUserRepositoryMock, timeout(5000)).save(ArgumentMatchers.argThat(
                 user -> user.getResourceId().equals(accessUser.getResourceId())
