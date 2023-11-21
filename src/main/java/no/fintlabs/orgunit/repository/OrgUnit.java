@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.fintlabs.scope.repository.ScopeOrgUnit;
 import no.fintlabs.user.repository.AccessUserOrgUnit;
 
@@ -22,7 +21,6 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "org_unit")
 @Getter
 @Setter
@@ -40,4 +38,13 @@ public class OrgUnit {
 
     @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
     private List<AccessUserOrgUnit> accessUserOrgUnits;
+
+    @Override
+    public String toString() {
+        return "OrgUnit{" +
+               "orgUnitId='" + orgUnitId + '\'' +
+               ", name='" + name + '\'' +
+               ", shortName='" + shortName + '\'' +
+               '}';
+    }
 }

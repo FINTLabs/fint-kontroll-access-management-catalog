@@ -13,7 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "scope")
 @Getter
 @Setter
@@ -35,4 +33,13 @@ public class Scope {
 
     @OneToMany(mappedBy = "scope", fetch = FetchType.EAGER)
     private List<ScopeOrgUnit> scopeOrgUnits;
+
+    @Override
+    public String toString() {
+        return "Scope{" +
+               "id=" + id +
+               ", objectType='" + objectType + '\'' +
+               ", scopeOrgUnits=" + scopeOrgUnits +
+               '}';
+    }
 }

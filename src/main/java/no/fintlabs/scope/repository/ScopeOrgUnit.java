@@ -11,14 +11,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.fintlabs.orgunit.repository.OrgUnit;
 
 @Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "scope_orgunit")
 @Getter
 @Setter
@@ -35,4 +33,13 @@ public class ScopeOrgUnit {
     @MapsId("orgUnitId")
     @JoinColumn(name = "org_unit_id")
     private OrgUnit orgUnit;
+
+    @Override
+    public String toString() {
+        return "ScopeOrgUnit{" +
+               "scopeOrgUnitId=" + scopeOrgUnitId +
+               ", scope=" + scope +
+               ", orgUnit=" + orgUnit +
+               '}';
+    }
 }

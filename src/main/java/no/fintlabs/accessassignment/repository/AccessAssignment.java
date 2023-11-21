@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.repository.AccessUser;
@@ -21,7 +20,6 @@ import no.fintlabs.user.repository.AccessUser;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "accessassignment")
 @Getter
 @Setter
@@ -43,4 +41,14 @@ public class AccessAssignment {
     @MapsId("accessRoleId")
     @JoinColumn(name = "access_role_id")
     private AccessRole accessRole;
+
+    @Override
+    public String toString() {
+        return "AccessAssignment{" +
+               "accessAssignmentId=" + accessAssignmentId +
+               ", accessUser=" + accessUser +
+               ", scope=" + scope +
+               ", accessRole=" + accessRole +
+               '}';
+    }
 }

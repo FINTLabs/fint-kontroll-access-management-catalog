@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.fintlabs.accessassignment.repository.AccessAssignment;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "accessuser")
 @Getter
 @Setter
@@ -53,5 +51,22 @@ public class AccessUser {
         }
 
         accessAssignments.add(accessAssignment);
+    }
+
+    @Override
+    public String toString() {
+        return "AccessUser{" +
+               "resourceId='" + resourceId + '\'' +
+               ", userId='" + userId + '\'' +
+               ", userName='" + userName + '\'' +
+               ", userType='" + userType + '\'' +
+               ", firstName='" + firstName + '\'' +
+               ", lastName='" + lastName + '\'' +
+               ", mainOrganisationUnitName='" + mainOrganisationUnitName + '\'' +
+               ", mainOrganisationUnitId='" + mainOrganisationUnitId + '\'' +
+               ", mobilePhone='" + mobilePhone + '\'' +
+               ", email='" + email + '\'' +
+               ", managerRef='" + managerRef + '\'' +
+               '}';
     }
 }
