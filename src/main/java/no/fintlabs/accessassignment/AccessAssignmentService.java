@@ -52,10 +52,17 @@ public class AccessAssignmentService {
                 .ifPresentOrElse(orgUnit -> createScopeOrgUnitRelation(orgUnit, scope),
                                  () -> log.error("OrgUnit with id {} does not exist, not saving", orgUnitId)));
 
-        AccessAssignment savedAssignment = accessAssignmentRepository.save(createAccessAssignment(scope, accessUser, accessRole));
+        AccessAssignment accessAssignment = createAccessAssignment(scope, accessUser, accessRole);
+
+        log.info("Access assignment for saving {}", accessAssignment);
+
+        AccessAssignment savedAssignment = accessAssignmentRepository.save(accessAssignment);
+
+        log.info("Access assignment saved {}", savedAssignment);
 
         accessUser.addAccessAssignment(savedAssignment);
         accessUserRepository.save(accessUser);
+
         return savedAssignment;
     }
 
@@ -67,6 +74,7 @@ public class AccessAssignmentService {
                                             .accessRoleId(accessRole.getAccessRoleId())
                                             .build())
                 .accessUser(accessUser)
+                .accessRole(accessRole)
                 .scope(scope)
                 .build();
     }
