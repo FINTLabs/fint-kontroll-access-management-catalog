@@ -54,11 +54,11 @@ public class AccessAssignmentService {
 
         AccessAssignment accessAssignment = createAccessAssignment(scope, accessUser, accessRole);
 
-        log.info("Access assignment for saving {}", accessAssignment);
+        log.info("Access assignment for saving. Resourceid: {} userId: {} role: {}", accessAssignment.getScope().getId(), accessAssignment.getAccessUser().getResourceId(), accessRole.getAccessRoleId());
 
         AccessAssignment savedAssignment = accessAssignmentRepository.save(accessAssignment);
 
-        log.info("Access assignment saved {}", savedAssignment);
+        log.info("Access assignment saved {}", savedAssignment.getAccessAssignmentId());
 
         accessUser.addAccessAssignment(savedAssignment);
         accessUserRepository.save(accessUser);

@@ -13,7 +13,7 @@ public class AccessAssignmentMapper {
 
     private static List<String> getScopeOrgUnits(AccessAssignment accessAssignment) {
         return accessAssignment.getScope().getScopeOrgUnits().stream()
-                .map(scopeOrgUnit -> scopeOrgUnit.getOrgUnit().getOrgUnitId())
+                .map(scopeOrgUnit -> scopeOrgUnit.getScopeOrgUnitId().getOrgUnitId())
                 .toList();
     }
 }
