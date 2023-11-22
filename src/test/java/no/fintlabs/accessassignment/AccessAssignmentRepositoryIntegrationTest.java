@@ -1,19 +1,15 @@
 package no.fintlabs.accessassignment;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
-import no.fintlabs.accessassignment.repository.AccessAssignmentId;
 import no.fintlabs.accessassignment.repository.AccessAssignmentRepository;
 import no.fintlabs.accessrole.AccessRole;
+import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.orgunit.repository.OrgUnit;
 import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import no.fintlabs.scope.repository.Scope;
-import no.fintlabs.scope.repository.ScopeOrgUnit;
-import no.fintlabs.scope.repository.ScopeOrgUnitId;
-import no.fintlabs.scope.repository.ScopeOrgUnitRepository;
 import no.fintlabs.scope.repository.ScopeRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,10 +38,10 @@ public class AccessAssignmentRepositoryIntegrationTest {
     private ScopeRepository scopeRepository;
 
     @Autowired
-    private ScopeOrgUnitRepository scopeOrgUnitRepository;
+    private AccessUserRepository accessUserRepository;
 
     @Autowired
-    private AccessUserRepository accessUserRepository;
+    private AccessRoleRepository accessRoleRepository;
 
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15-alpine")
@@ -66,24 +62,16 @@ public class AccessAssignmentRepositoryIntegrationTest {
 
     @Test
     public void shouldCreateNewAssignmentForUser() {
-        OrgUnit orgUnit1 = createOrgUnit("198");
-        OrgUnit orgUnit2 = createOrgUnit("153");
+        OrgUnit orgUnit1 = createOrgUnit("198", "org 1");
+        OrgUnit orgUnit2 = createOrgUnit("153", "org 2");
 
-        Scope scope = createOrgUnitScope("orgunit");
-
-        ScopeOrgUnit scopeOrgUnit1 = createScopeOrgUnitRelation(scope, orgUnit1);
-        ScopeOrgUnit scopeOrgUnit2 = createScopeOrgUnitRelation(scope, orgUnit2);
-
-        List<ScopeOrgUnit> scopeOrgUnits = new ArrayList<>();
-        scopeOrgUnits.add(scopeOrgUnit1);
-        scopeOrgUnits.add(scopeOrgUnit2);
-        scope.setScopeOrgUnits(scopeOrgUnits);
-
-        Scope updatedScope = scopeRepository.save(scope);
+        Scope scope = createScope("orgunit", List.of(orgUnit1, orgUnit2));
 
         AccessUser accessUser = createAccessUser();
 
-        AccessAssignment accessAssignment = createAccessAssignment(updatedScope, accessUser);
+        AccessRole accessRole = createAccessRole("ata", "Access to all");
+
+        AccessAssignment accessAssignment = createAccessAssignment(List.of(scope), accessUser, accessRole);
 
         List<AccessAssignment> accessAssignments = new ArrayList<>();
         accessAssignments.add(accessAssignment);
@@ -94,36 +82,25 @@ public class AccessAssignmentRepositoryIntegrationTest {
         accessUserRepository.findById(accessUser.getResourceId()).ifPresent(foundAccessUser -> {
             assertThat(foundAccessUser).isEqualTo(updatedAccessUser);
             assertThat(foundAccessUser.getAccessAssignments()).hasSize(1);
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getObjectType()).isEqualTo("orgunit");
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits()).hasSize(2);
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(0).getOrgUnit()
-                               .getOrgUnitId()).isEqualTo("198");
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScope().getScopeOrgUnits().get(1).getOrgUnit()
-                               .getOrgUnitId()).isEqualTo("153");
+
+            AccessAssignment foundAccessAssignment = foundAccessUser.getAccessAssignments().get(0);
+            assertThat(foundAccessAssignment.getAccessRole().getAccessRoleId()).isEqualTo("ata");
+            assertThat(foundAccessAssignment.getAccessUser().getUserId()).isEqualTo("123");
+
+            List<Scope> foundScopes = foundAccessAssignment.getScopes();
+
+            assertThat(foundScopes).hasSize(1);
+            assertThat(foundScopes.get(0).getObjectType()).isEqualTo("orgunit");
+
+            List<OrgUnit> orgUnits = foundScopes.get(0).getOrgUnits();
+
+            assertThat(orgUnits).hasSize(2);
+            assertThat(orgUnits.get(0).getOrgUnitId()).isEqualTo("198");
+            assertThat(orgUnits.get(1).getOrgUnitId()).isEqualTo("153");
         });
 
     }
 
-    @NotNull
-    private AccessAssignment createAccessAssignment(Scope savedOrgUnitScope, AccessUser savedAccessUser) {
-        AccessAssignment accessAssignment = AccessAssignment.builder()
-                .accessAssignmentId(AccessAssignmentId.builder()
-                                            .scopeId(savedOrgUnitScope.getId())
-                                            .userId(savedAccessUser.getUserId())
-                                            .accessRoleId("ata")
-                                            .build())
-                .accessUser(savedAccessUser)
-                .scope(savedOrgUnitScope)
-                .accessRole(AccessRole.builder()
-                                    .accessRoleId("ata")
-                                    .name("Applikasjonstilgangsadministrator")
-                                    .build())
-                .build();
-
-        return accessAssignmentRepository.save(accessAssignment);
-    }
-
-    @NotNull
     private AccessUser createAccessUser() {
         AccessUser accessUser = AccessUser.builder()
                 .resourceId("123")
@@ -134,33 +111,39 @@ public class AccessAssignmentRepositoryIntegrationTest {
         return accessUserRepository.save(accessUser);
     }
 
-    @NotNull
-    private ScopeOrgUnit createScopeOrgUnitRelation(Scope savedOrgUnitScope, OrgUnit orgUnit) {
-        ScopeOrgUnit scopeOrgUnit = ScopeOrgUnit.builder()
-                .scopeOrgUnitId(ScopeOrgUnitId.builder()
-                                        .scopeId(savedOrgUnitScope.getId())
-                                        .orgUnitId(orgUnit.getOrgUnitId())
-                                        .build())
-                .scope(savedOrgUnitScope)
-                .orgUnit(orgUnit)
+    private AccessAssignment createAccessAssignment(List<Scope> scopes, AccessUser accessUser, AccessRole accessRole) {
+        AccessAssignment accessAssignment = AccessAssignment.builder()
+                .accessRole(accessRole)
+                .accessUser(accessUser)
+                .scopes(scopes)
                 .build();
 
-        return scopeOrgUnitRepository.save(scopeOrgUnit);
+        return accessAssignmentRepository.save(accessAssignment);
     }
 
-    @NotNull
-    private Scope createOrgUnitScope(String scope) {
+    private Scope createScope(String scope, List<OrgUnit> orgUnits) {
         Scope orgUnitScope = Scope.builder()
                 .objectType(scope)
+                .orgUnits(orgUnits)
                 .build();
 
         return scopeRepository.save(orgUnitScope);
     }
 
-    private OrgUnit createOrgUnit(String orgUnitId) {
+    private OrgUnit createOrgUnit(String orgUnitId, String name) {
         OrgUnit orgUnit = OrgUnit.builder()
+                .name(name)
                 .orgUnitId(orgUnitId)
                 .build();
         return orgUnitRepository.save(orgUnit);
+    }
+
+    private AccessRole createAccessRole(String accessRoleId, String name) {
+        AccessRole accessRole = AccessRole.builder()
+                .accessRoleId(accessRoleId)
+                .name(name)
+                .build();
+
+        return accessRoleRepository.save(accessRole);
     }
 }

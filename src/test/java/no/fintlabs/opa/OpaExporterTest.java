@@ -1,16 +1,12 @@
 package no.fintlabs.opa;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
-import no.fintlabs.accessassignment.repository.AccessAssignmentId;
 import no.fintlabs.accesspermission.repository.AccessPermission;
 import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.feature.repository.Feature;
 import no.fintlabs.orgunit.repository.OrgUnit;
-import no.fintlabs.scope.repository.Scope;
-import no.fintlabs.scope.repository.ScopeOrgUnit;
-import no.fintlabs.scope.repository.ScopeOrgUnitId;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.apache.commons.io.IOUtils;
@@ -25,10 +21,13 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static no.fintlabs.user.AccessAssignmentMother.createAccessAssignmentWithScope;
+import static no.fintlabs.user.AccessRoleMother.createAccessRole;
+import static no.fintlabs.user.AccessUserMother.createAccessUser;
+import static no.fintlabs.user.ScopeMother.createScope;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -89,99 +88,46 @@ public class OpaExporterTest {
     }
 
     private AccessUser createMockAccessUserErling() {
-        AccessUser userErling = createAccessUser("1", "erling.jahr@vigoiks.no");
+        AccessUser user = createAccessUser("1", "erling.jahr@vigoiks.no");
 
-        AccessAssignment accessAssignmentScope1Erling = createAssignment(1L, "ata", userErling);
-        AccessAssignment accessAssignmentScope2Erling = createAssignment(2L, "ata", userErling);
-        AccessAssignment accessAssignmentScope3Erling = createAssignment(3L, "ata", userErling);
-        AccessAssignment accessAssignmentScope4Erling = createAssignment(4L, "ata", userErling);
+        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1");
+        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2");
+        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3");
+        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4");
 
-        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null, null);
-        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null, null);
-        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null, null);
-        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null, null);
+        List<OrgUnit> orgs1 = List.of(orgUnit198, orgUnit153);
+        List<OrgUnit> orgs2 = List.of(orgUnit6, orgUnit1);
 
-        Scope scopeUser = new Scope(1L, "user", null);
-        Scope scopeRole = new Scope(2L, "role", null);
-        Scope scopeResource = new Scope(3L, "resource", null);
-        Scope scopeOrgUnit = new Scope(4L, "orgunit", null);
+        AccessRole ata = createAccessRole("ata", "applikasjonstilgangsadministrator");
 
-        List<ScopeOrgUnit> scopeOrgunitsOrg = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getOrgUnitId()), scopeRole, orgUnit153),
-                new ScopeOrgUnit(new ScopeOrgUnitId(3L, orgUnit6.getOrgUnitId()), scopeResource, orgUnit6),
-                new ScopeOrgUnit(new ScopeOrgUnitId(4L, orgUnit1.getOrgUnitId()), scopeOrgUnit, orgUnit1)
-        );
+        AccessAssignment accessAssignmentScope1 = createAccessAssignmentWithScope(user, createScope(1L, "user", orgs1), ata);
+        AccessAssignment accessAssignmentScope2 = createAccessAssignmentWithScope(user, createScope(2L, "role", orgs2), ata);
 
-        scopeUser.setScopeOrgUnits(scopeOrgunitsOrg);
-        scopeRole.setScopeOrgUnits(scopeOrgunitsOrg);
-        scopeResource.setScopeOrgUnits(scopeOrgunitsOrg);
-        scopeOrgUnit.setScopeOrgUnits(scopeOrgunitsOrg);
+        user.setAccessAssignments(List.of(accessAssignmentScope1, accessAssignmentScope2));
 
-        orgUnit198.setScopeOrgUnits(scopeOrgunitsOrg);
-        orgUnit153.setScopeOrgUnits(scopeOrgunitsOrg);
-        orgUnit6.setScopeOrgUnits(scopeOrgunitsOrg);
-        orgUnit1.setScopeOrgUnits(scopeOrgunitsOrg);
-
-        accessAssignmentScope1Erling.setScope(scopeUser);
-        accessAssignmentScope2Erling.setScope(scopeRole);
-        accessAssignmentScope3Erling.setScope(scopeResource);
-        accessAssignmentScope4Erling.setScope(scopeOrgUnit);
-
-        userErling.setAccessAssignments(Arrays.asList(accessAssignmentScope1Erling, accessAssignmentScope2Erling, accessAssignmentScope3Erling, accessAssignmentScope4Erling));
-
-        return userErling;
+        return user;
     }
 
     private AccessUser createMockAccessUserMorten() {
-        AccessUser userMorten = createAccessUser("2", "morten.solberg@vigoiks.no");
+        AccessUser user = createAccessUser("1", "morten.solberg@vigoiks.no");
 
-        AccessAssignment accessAssignmentScope1Morten = createAssignment(1, "aa", userMorten);
-        AccessAssignment accessAssignmentScope2Morten = createAssignment(2, "aa", userMorten);
+        OrgUnit orgUnit198 = new OrgUnit("3", "name1", "shortname1");
+        OrgUnit orgUnit153 = new OrgUnit("8", "name2", "shortname2");
+        OrgUnit orgUnit6 = new OrgUnit("44", "name3", "shortname3");
+        OrgUnit orgUnit1 = new OrgUnit("11", "name4", "shortname4");
 
-        OrgUnit orgUnit198 = new OrgUnit("198", "name1", "shortname1", null, null);
-        OrgUnit orgUnit153 = new OrgUnit("153", "name2", "shortname2", null, null);
-        OrgUnit orgUnit6 = new OrgUnit("6", "name3", "shortname3", null, null);
-        OrgUnit orgUnit1 = new OrgUnit("1", "name4", "shortname4", null, null);
+        List<OrgUnit> orgs1 = List.of(orgUnit198, orgUnit153);
+        List<OrgUnit> orgs2 = List.of(orgUnit6, orgUnit1);
 
-        Scope scopeUser = new Scope(1L, "user", null);
-        Scope scopeRole = new Scope(2L, "role", null);
+        AccessRole aa = createAccessRole("aa", "Applikasjonsadministrator");
 
-        List<ScopeOrgUnit> scopeOrgunitsOrg = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit153.getOrgUnitId()), scopeUser, orgUnit153),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit6.getOrgUnitId()), scopeUser, orgUnit6),
-                new ScopeOrgUnit(new ScopeOrgUnitId(1L, orgUnit1.getOrgUnitId()), scopeUser, orgUnit1)
-        );
+        AccessAssignment accessAssignmentScope1 = createAccessAssignmentWithScope(user, createScope(3L, "resource", orgs1), aa);
+        AccessAssignment accessAssignmentScope2 = createAccessAssignmentWithScope(user, createScope(4L, "license", orgs2), aa);
 
-        List<ScopeOrgUnit> scopeOrgunitsRole = Arrays.asList(
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit198.getOrgUnitId()), scopeUser, orgUnit198),
-                new ScopeOrgUnit(new ScopeOrgUnitId(2L, orgUnit153.getOrgUnitId()), scopeUser, orgUnit153)
-                );
+        user.setAccessAssignments(List.of(accessAssignmentScope1, accessAssignmentScope2));
 
-        scopeUser.setScopeOrgUnits(scopeOrgunitsOrg);
-        scopeRole.setScopeOrgUnits(scopeOrgunitsRole);
-
-        accessAssignmentScope1Morten.setScope(scopeUser);
-        accessAssignmentScope2Morten.setScope(scopeRole);
-
-        userMorten.setAccessAssignments(Arrays.asList(accessAssignmentScope1Morten, accessAssignmentScope2Morten));
-
-        return userMorten;
+        return user;
     }
 
-    private AccessAssignment createAssignment(long scopeId, String roleId, AccessUser mockUser) {
-        return AccessAssignment.builder()
-                .accessAssignmentId(new AccessAssignmentId(scopeId, roleId, mockUser.getUserId()))
-                .accessUser(mockUser)
-                .build();
-    }
-
-    private AccessUser createAccessUser(String userId, String userName) {
-        return AccessUser.builder()
-                .userId(userId)
-                .userName(userName)
-                .build();
-    }
 }
 

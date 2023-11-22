@@ -3,7 +3,6 @@ package no.fintlabs.user;
 import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.orgunit.OrgUnitDto;
 import no.fintlabs.orgunit.OrgUnitMapper;
-import no.fintlabs.scope.repository.ScopeOrgUnit;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserScopesDto;
 import no.fintlabs.user.dto.UserRoleDto;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AccessUserMapper {
 
@@ -21,11 +19,12 @@ public class AccessUserMapper {
         final Map<String, UserRoleDto> roles = new HashMap<>();
 
         for (final AccessAssignment accessAssignment : accessUser.getAccessAssignments()) {
-            final String roleId = accessAssignment.getAccessAssignmentId().getAccessRoleId();
+
+            final String roleId = accessAssignment.getAccessRole().getAccessRoleId();
             final String roleName = accessAssignment.getAccessRole().getName();
 
             UserRoleDto roleScopesDto = roles.computeIfAbsent(roleId, k -> createRoleScopesDto(roleId, roleName));
-            roleScopesDto.scopes().add(mapUserScopes(accessAssignment));
+            roleScopesDto.scopes().addAll(mapAssignment(accessAssignment));
         }
 
         return new AccessUserDto(accessUser.getResourceId(), accessUser.getUserId(), accessUser.getUserName(), accessUser.getFirstName(),
@@ -36,16 +35,17 @@ public class AccessUserMapper {
         return new UserRoleDto(roleId, roleName, new ArrayList<>());
     }
 
-    private static AccessUserScopesDto mapUserScopes(AccessAssignment accessAssignment) {
-        return new AccessUserScopesDto(accessAssignment.getAccessAssignmentId().getScopeId(),
-                                       accessAssignment.getScope().getObjectType(),
-                                       mapOrgUnits(accessAssignment));
-    }
+    private static List<AccessUserScopesDto> mapAssignment(AccessAssignment accessAssignment) {
+        List<AccessUserScopesDto> accessUserScopesDtos = new ArrayList<>();
 
-    private static List<OrgUnitDto> mapOrgUnits(AccessAssignment accessAssignment) {
-        return accessAssignment.getScope().getScopeOrgUnits().stream()
-                .map(ScopeOrgUnit::getOrgUnit)
-                .map(OrgUnitMapper::toDto)
-                .collect(Collectors.toList());
+        accessAssignment.getScopes().forEach(scope -> {
+            List<OrgUnitDto> orgUnits = OrgUnitMapper.toDto(scope.getOrgUnits());
+
+            AccessUserScopesDto accessUserScopesDto = new AccessUserScopesDto(scope.getId(), scope.getObjectType(), orgUnits);
+            accessUserScopesDtos.add(accessUserScopesDto);
+
+        });
+
+        return accessUserScopesDtos;
     }
 }

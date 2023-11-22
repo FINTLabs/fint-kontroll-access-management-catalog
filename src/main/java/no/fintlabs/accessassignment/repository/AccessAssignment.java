@@ -1,11 +1,15 @@
 package no.fintlabs.accessassignment.repository;
 
-import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +20,8 @@ import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.repository.AccessUser;
 
+import java.util.List;
+
 @Builder
 @Entity
 @AllArgsConstructor
@@ -24,31 +30,21 @@ import no.fintlabs.user.repository.AccessUser;
 @Getter
 @Setter
 public class AccessAssignment {
-    @EmbeddedId
-    private AccessAssignmentId accessAssignmentId;
+    @Id()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId("scopeId")
-    @JoinColumn(name = "scope_id", nullable = false)
-    private Scope scope;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId("accessRoleId")
     @JoinColumn(name = "access_role_id")
     private AccessRole accessRole;
 
-    @Override
-    public String toString() {
-        return "AccessAssignment{" +
-               "accessAssignmentId=" + accessAssignmentId +
-               ", accessUser=" + accessUser +
-               ", scope=" + scope +
-               ", accessRole=" + accessRole +
-               '}';
-    }
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "assignment_scope",
+            joinColumns = @JoinColumn(name = "assignment_id"),
+            inverseJoinColumns = @JoinColumn(name = "scope_id"))
+    private List<Scope> scopes;
 }

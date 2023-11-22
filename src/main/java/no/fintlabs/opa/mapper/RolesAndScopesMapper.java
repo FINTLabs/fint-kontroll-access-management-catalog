@@ -4,6 +4,7 @@ import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.opa.dto.AssignmentScopeDto;
 import no.fintlabs.opa.dto.RoleAndScopeDto;
 import no.fintlabs.opa.dto.RolesAndScopesDto;
+import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.repository.AccessUser;
 
 import java.util.ArrayList;
@@ -18,12 +19,15 @@ public class RolesAndScopesMapper {
         Map<String, List<AssignmentScopeDto>> roleToScopes = new HashMap<>();
 
         for (AccessAssignment assignment : user.getAccessAssignments()) {
-            String roleId = assignment.getAccessAssignmentId().getAccessRoleId();
-            AssignmentScopeDto scopeDto = AssignmentScopeMapper.mapAccessAssignmentToAssignmentScopeDto(assignment);
+            String roleId = assignment.getAccessRole().getAccessRoleId();
 
-            roleToScopes
-                    .computeIfAbsent(roleId, k -> new ArrayList<>())
-                    .add(scopeDto);
+            for (Scope scope : assignment.getScopes()) {
+                AssignmentScopeDto scopeDto = AssignmentScopeMapper.toDto(scope);
+
+                roleToScopes
+                        .computeIfAbsent(roleId, k -> new ArrayList<>())
+                        .add(scopeDto);
+            }
         }
 
         List<RoleAndScopeDto> roleAndScopeDTOs = roleToScopes.entrySet().stream()

@@ -1,19 +1,21 @@
 package no.fintlabs.accessassignment;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
+import no.fintlabs.scope.ScopeMapper;
 
 import java.util.List;
 
 public class AccessAssignmentMapper {
 
     public static AccessAssignmentDto toDto(AccessAssignment accessAssignment) {
-        return new AccessAssignmentDto(accessAssignment.getAccessAssignmentId().getAccessRoleId(), accessAssignment.getAccessAssignmentId()
-                .getScopeId(), accessAssignment.getAccessAssignmentId().getUserId(), getScopeOrgUnits(accessAssignment));
+        return new AccessAssignmentDto(accessAssignment.getId(), accessAssignment.getAccessRole().getAccessRoleId(),
+                                       ScopeMapper.toDto(accessAssignment.getScopes()),
+                                       accessAssignment.getAccessUser().getUserId());
     }
 
-    private static List<String> getScopeOrgUnits(AccessAssignment accessAssignment) {
-        return accessAssignment.getScope().getScopeOrgUnits().stream()
-                .map(scopeOrgUnit -> scopeOrgUnit.getScopeOrgUnitId().getOrgUnitId())
+    public static List<AccessAssignmentDto> toDto(List<AccessAssignment> accessAssignments) {
+        return accessAssignments.stream()
+                .map(AccessAssignmentMapper::toDto)
                 .toList();
     }
 }

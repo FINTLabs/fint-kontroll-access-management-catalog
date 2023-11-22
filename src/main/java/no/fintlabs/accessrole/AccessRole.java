@@ -31,5 +31,5 @@ public class AccessRole {
 
     @JsonIgnore
     @OneToMany(mappedBy = "accessRole", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<AccessAssignment> accessAssignments;
+    private List<AccessAssignment> accessAssignments; //TODO: remove?
 }

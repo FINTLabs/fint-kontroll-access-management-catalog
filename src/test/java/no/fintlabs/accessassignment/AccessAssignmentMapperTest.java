@@ -1,16 +1,9 @@
 package no.fintlabs.accessassignment;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
-import no.fintlabs.accessassignment.repository.AccessAssignmentId;
-import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.orgunit.repository.OrgUnit;
-import no.fintlabs.scope.repository.Scope;
-import no.fintlabs.scope.repository.ScopeOrgUnit;
-import no.fintlabs.scope.repository.ScopeOrgUnitId;
-import no.fintlabs.user.repository.AccessUser;
+import no.fintlabs.user.AccessAssignmentMother;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,31 +12,35 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class AccessAssignmentMapperTest {
     @Test
     public void shouldMapToDto() {
-        List<ScopeOrgUnit> scopeOrgUnits = new ArrayList<>();
-
-        OrgUnit orgUnit1 = new OrgUnit("198", "orgUnit1", "shortname1", scopeOrgUnits, null);
-        OrgUnit orgUnit2 = new OrgUnit("153", "orgUnit2", "shortname2", scopeOrgUnits, null);
-
-        ScopeOrgUnit scopeOrgUnit1 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "198"), new Scope(), orgUnit1);
-        ScopeOrgUnit scopeOrgUnit2 = new ScopeOrgUnit(new ScopeOrgUnitId(1L, "153"), new Scope(), orgUnit2);
-
-        scopeOrgUnits.add(scopeOrgUnit1);
-        scopeOrgUnits.add(scopeOrgUnit2);
-
-        Scope scope = new Scope();
-        scope.setId(1L);
-        scope.setScopeOrgUnits(scopeOrgUnits);
-
-        AccessAssignment accessAssignment = new AccessAssignment(new AccessAssignmentId(1L, "role1", "user1"), new AccessUser(), scope, new AccessRole());
+        AccessAssignment accessAssignment = AccessAssignmentMother.createDefaultAccessAssignment();
 
         AccessAssignmentDto dto = AccessAssignmentMapper.toDto(accessAssignment);
 
         assertNotNull(dto);
-        assertEquals("role1", dto.accessRoleId());
-        assertEquals(1L, dto.scopeId());
+        assertEquals(999L, dto.id());
+        assertEquals("ata", dto.accessRoleId());
         assertEquals("user1", dto.userId());
-        assertEquals(2, dto.orgUnitIds().size());
-        assertEquals("198", dto.orgUnitIds().get(0));
-        assertEquals("153", dto.orgUnitIds().get(1));
+        assertEquals(1L, dto.scopes().get(0).id());
+        assertEquals(2, dto.scopes().get(0).orgUnits().size());
+        assertEquals("198", dto.scopes().get(0).orgUnits().get(0).orgUnitId());
+        assertEquals("153", dto.scopes().get(0).orgUnits().get(1).orgUnitId());
+    }
+
+    @Test
+    public void shouldMapListToDto() {
+        List<AccessAssignment> accessAssignment = List.of(AccessAssignmentMother.createDefaultAccessAssignment());
+
+        List<AccessAssignmentDto> dtos = AccessAssignmentMapper.toDto(accessAssignment);
+
+        assertNotNull(dtos);
+        assertEquals(1, dtos.size());
+        AccessAssignmentDto dto = dtos.get(0);
+        assertEquals(999L, dto.id());
+        assertEquals("ata", dto.accessRoleId());
+        assertEquals("user1", dto.userId());
+        assertEquals(1L, dto.scopes().get(0).id());
+        assertEquals(2, dto.scopes().get(0).orgUnits().size());
+        assertEquals("198", dto.scopes().get(0).orgUnits().get(0).orgUnitId());
+        assertEquals("153", dto.scopes().get(0).orgUnits().get(1).orgUnitId());
     }
 }

@@ -3,19 +3,14 @@ package no.fintlabs.orgunit.repository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.fintlabs.scope.repository.ScopeOrgUnit;
-import no.fintlabs.user.repository.AccessUserOrgUnit;
-
-import java.util.List;
+import lombok.ToString;
 
 @Builder
 @Entity
@@ -24,6 +19,7 @@ import java.util.List;
 @Table(name = "org_unit")
 @Getter
 @Setter
+@ToString
 public class OrgUnit {
     @Id
     @Column(name = "org_unit_id", unique = true, nullable = false)
@@ -33,18 +29,4 @@ public class OrgUnit {
     private String name;
     private String shortName;
 
-    @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
-    private List<ScopeOrgUnit> scopeOrgUnits;
-
-    @OneToMany(mappedBy = "orgUnit", fetch = FetchType.EAGER)
-    private List<AccessUserOrgUnit> accessUserOrgUnits;
-
-    @Override
-    public String toString() {
-        return "OrgUnit{" +
-               "orgUnitId='" + orgUnitId + '\'' +
-               ", name='" + name + '\'' +
-               ", shortName='" + shortName + '\'' +
-               '}';
-    }
 }
