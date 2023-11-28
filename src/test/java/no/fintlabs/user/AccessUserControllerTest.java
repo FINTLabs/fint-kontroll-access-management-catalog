@@ -64,7 +64,7 @@ public class AccessUserControllerTest {
                                 .param("sort", "userName,asc")
                                 .param("name", "") // Add other expected parameters
                                 .param("orgunitid", "") // If expecting a list, you might need to handle this differently
-                                .param("usertype", ""))
+                                .param("accessroleid", ""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.users").isArray())

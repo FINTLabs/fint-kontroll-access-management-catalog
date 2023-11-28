@@ -3,6 +3,7 @@ package no.fintlabs.user.repository;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
+import no.fintlabs.accessassignment.repository.AccessAssignment;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -31,7 +32,11 @@ public class AccessUserSpecification {
         };
     }
 
-    public static Specification<AccessUser> hasUserType(String userType) {
-        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("userType"), userType);
+    public static Specification<AccessUser> hasAccessRoleId(String accessRoleId) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AccessUser, AccessAssignment> accessAssignmentJoin = root.join("accessAssignments");
+            Path<String> accessRoleIdPath = accessAssignmentJoin.get("accessRole").get("accessRoleId");
+            return accessRoleIdPath.in(accessRoleId);
+        };
     }
 }

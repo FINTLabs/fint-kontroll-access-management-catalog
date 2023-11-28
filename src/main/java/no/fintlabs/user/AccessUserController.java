@@ -39,12 +39,12 @@ public class AccessUserController {
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam(value = "name", required = false, defaultValue = "") String name,
                                                            @RequestParam(value = "orgunitid", required = false, defaultValue = "") List<String> orgUnitIds,
-                                                           @RequestParam(value = "usertype", required = false, defaultValue = "") String userType,
+                                                           @RequestParam(value = "accessroleid", required = false, defaultValue = "") String accessRoleId,
                                                            @SortDefault(sort = "resourceId", direction = Sort.Direction.ASC)
                                                            @PageableDefault(size = 100) Pageable pageable) {
         log.info("Fetching all users with pagination {}", pageable);
 
-        Specification<AccessUser> spec = AccessUserSearchCreator.createAccessUserSearch(name, orgUnitIds, userType);
+        Specification<AccessUser> spec = AccessUserSearchCreator.createAccessUserSearch(name, orgUnitIds, accessRoleId);
 
         try {
             Page<AccessUser> accessUsers = accessUserRepository.findAll(spec, pageable == null ? Pageable.unpaged() : pageable);

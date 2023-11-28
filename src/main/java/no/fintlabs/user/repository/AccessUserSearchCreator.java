@@ -6,7 +6,7 @@ import java.util.List;
 
 public class AccessUserSearchCreator {
 
-    public static Specification<AccessUser> createAccessUserSearch(String name, List<String> orgUnitIds, String userType) {
+    public static Specification<AccessUser> createAccessUserSearch(String name, List<String> orgUnitIds, String accessRoleId) {
         Specification<AccessUser> spec = Specification.where(null);
 
         if(name != null && !name.trim().isEmpty()) {
@@ -17,8 +17,8 @@ public class AccessUserSearchCreator {
             spec = spec.and(AccessUserSpecification.hasOrganisationUnitIds(orgUnitIds));
         }
 
-        if (userType != null && !userType.trim().isEmpty()) {
-            spec = spec.and(AccessUserSpecification.hasUserType(userType));
+        if (accessRoleId != null && !accessRoleId.trim().isEmpty()) {
+            spec = spec.and(AccessUserSpecification.hasAccessRoleId(accessRoleId));
         }
         return spec;
     }
