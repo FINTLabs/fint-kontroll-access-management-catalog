@@ -31,6 +31,9 @@ patches:
       - op: replace
         path: "/spec/env/2/value"
         value: "afk.no"
+      - op: replace
+        path: "/spec/env/3/value"
+        value: "afk-no-fint-kontroll-access-mngmnt-catalog"
     target:
       kind: Application
       name: fint-kontroll-access-mngmnt-catalog
