@@ -1,6 +1,5 @@
 package no.fintlabs.accessassignment.repository;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +33,7 @@ public class AccessAssignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private AccessUser accessUser;
 
@@ -42,7 +41,8 @@ public class AccessAssignment {
     @JoinColumn(name = "access_role_id")
     private AccessRole accessRole;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //Removed: cascade = CascadeType.ALL, doing deletion in service
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "assignment_scope",
             joinColumns = @JoinColumn(name = "assignment_id"),
             inverseJoinColumns = @JoinColumn(name = "scope_id"))

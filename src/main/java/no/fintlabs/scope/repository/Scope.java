@@ -1,6 +1,5 @@
 package no.fintlabs.scope.repository;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,15 +35,12 @@ public class Scope {
     @Column(name = "objecttype")
     private String objectType;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "scope_orgunit",
             joinColumns = @JoinColumn(name = "scope_id"),
             inverseJoinColumns = @JoinColumn(name = "org_unit_id"))
     private List<OrgUnit> orgUnits;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "assignment_scope",
-            joinColumns = @JoinColumn(name = "assignment_id"),
-            inverseJoinColumns = @JoinColumn(name = "scope_id"))
+    @ManyToMany(mappedBy = "scopes", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments;
 }
