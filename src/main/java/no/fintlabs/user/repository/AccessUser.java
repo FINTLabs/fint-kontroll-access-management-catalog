@@ -1,6 +1,5 @@
 package no.fintlabs.user.repository;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -43,7 +42,7 @@ public class AccessUser {
     private List<AccessUserOrgUnit> accessUserOrgUnits = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments = new ArrayList<>();
 
     public void addAccessAssignment(AccessAssignment accessAssignment) {

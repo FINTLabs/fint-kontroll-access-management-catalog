@@ -10,8 +10,10 @@ import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,21 +40,72 @@ public class AccessAssignmentController {
         this.accessRoleRepository = accessRoleRepository;
     }
 
+    @GetMapping("/user/{resourceId}")
+    @ResponseBody
+    public List<AccessAssignmentDto> getAccessAssignments(@PathVariable(name = "resourceId") String resourceId) {
+        log.info("Fetching accessassignments for user {}", resourceId);
+
+        try {
+            AccessUser accessUser = accessUserRepository.findByResourceId(resourceId);
+            List<AccessAssignment> accessAssignments = accessUser.getAccessAssignments();
+            return AccessAssignmentMapper.toDto(accessAssignments);
+
+        } catch (Exception e) {
+            log.error("Error getting all accessassignments", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting accessassignments");
+        }
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public List<AccessAssignmentDto> createAccessAssignments(@RequestBody @Valid UpdateAccessAssignmentDto accessAssignmentDto) {
         log.info("Assigning access to user with data {}", accessAssignmentDto);
 
-        try {
-            AccessUser accessUser = accessUserRepository.findById(accessAssignmentDto.userId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+        AccessUser accessUser = accessUserRepository.findById(accessAssignmentDto.userId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
 
-            AccessRole accessRole = accessRoleRepository.findById(accessAssignmentDto.accessRoleId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
+        AccessRole accessRole = accessRoleRepository.findById(accessAssignmentDto.accessRoleId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
+
+        List<AccessAssignment> currentAssignmentsForRole = accessUser.getAccessAssignments().stream()
+                .filter(accessAssignment -> accessAssignment.getAccessRole().equals(accessRole))
+                .toList();
+
+        if (!currentAssignmentsForRole.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already has assignments for this role, do update.");
+        }
+
+        try {
 
             // TODO: rewrite accessAssignmentDto.scopeId() to being objecttype
+            List<AccessAssignment> savedAssignments =
+                    accessAssignmentService.createAssignmentsForUser(accessAssignmentDto.orgUnitIds(), "", accessUser, accessRole);
 
+            return AccessAssignmentMapper.toDto(savedAssignments);
+
+        } catch (Exception e) {
+            log.error("Error creating accessassignment {}", accessAssignmentDto, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when creating accessassignment");
+        }
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<AccessAssignmentDto> updateAccessAssignments(@RequestBody @Valid UpdateAccessAssignmentDto accessAssignmentDto) {
+        log.info("Assigning access to user with data {}", accessAssignmentDto);
+
+        AccessUser accessUser = accessUserRepository.findById(accessAssignmentDto.userId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+
+        AccessRole accessRole = accessRoleRepository.findById(accessAssignmentDto.accessRoleId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
+
+        try {
+
+            // TODO: rewrite accessAssignmentDto.scopeId() to being objecttype
+            accessAssignmentService.deleteAllAssignmentsByResourceIdAndRole(accessUser, accessRole);
             List<AccessAssignment> savedAssignments =
                     accessAssignmentService.createAssignmentsForUser(accessAssignmentDto.orgUnitIds(), "", accessUser, accessRole);
 
@@ -79,8 +132,6 @@ public class AccessAssignmentController {
         }
     }
 
-
-    //deleteOrgUnitFromScope
     @DeleteMapping("/scope/{scopeId}/orgunit/{orgUnitId}")
     public void deleteOrgUnitFromScope(@PathVariable(name = "scopeId") Long scopeId, @PathVariable(name = "orgUnitId") String orgUnitId) {
         log.info("Deleting orgunit {} from scope {}", orgUnitId, scopeId);
@@ -94,5 +145,19 @@ public class AccessAssignmentController {
         }
     }
 
-    //deleteScopeOrgUnitsForUserByObjectType
+    /*@DeleteMapping("/scope/{scopeId}/orgunit/{orgUnitId}")
+    public void deleteOrgUnitsForUserByObjectType(@PathVariable(name = "scopeId") Long scopeId, @PathVariable(name = "orgUnitId") String orgUnitId) {
+        log.info("Deleting orgunit {} from scope {}", orgUnitId, scopeId);
+
+        try {
+            accessAssignmentService.deleteOrgUnitFromScope(scopeId, orgUnitId);
+        } catch (Exception e) {
+            log.error("Error deleting orgunit {} from scope {}", orgUnitId, scopeId, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                              String.format("Failed to delete orgunit %s from scope %s", orgUnitId, scopeId));
+        }
+    }*/
+    //deleteOrgUnitsForUserByObjectType
+
+
 }
