@@ -9,6 +9,8 @@ import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,4 +63,36 @@ public class AccessAssignmentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when creating accessassignment");
         }
     }
+
+    @DeleteMapping("/user/{resourceId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccessAssignment(@PathVariable(name = "resourceId") String resourceId) {
+        log.info("Deleting all assignments for user {}", resourceId);
+
+        try {
+            AccessUser accessUser = accessUserRepository.findByResourceId(resourceId);
+            accessAssignmentService.deleteAllAssignmentsByResourceId(accessUser);
+        } catch (Exception e) {
+            log.error("Error deleting accessassignment for user {}", resourceId, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                              String.format("Failed to delete assignments for user %s", resourceId));
+        }
+    }
+
+
+    //deleteOrgUnitFromScope
+    @DeleteMapping("/scope/{scopeId}/orgunit/{orgUnitId}")
+    public void deleteOrgUnitFromScope(@PathVariable(name = "scopeId") Long scopeId, @PathVariable(name = "orgUnitId") String orgUnitId) {
+        log.info("Deleting orgunit {} from scope {}", orgUnitId, scopeId);
+
+        try {
+            accessAssignmentService.deleteOrgUnitFromScope(scopeId, orgUnitId);
+        } catch (Exception e) {
+            log.error("Error deleting orgunit {} from scope {}", orgUnitId, scopeId, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                              String.format("Failed to delete orgunit %s from scope %s", orgUnitId, scopeId));
+        }
+    }
+
+    //deleteScopeOrgUnitsForUserByObjectType
 }

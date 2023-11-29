@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccessUserRepository extends JpaRepository<AccessUser, String>, JpaSpecificationExecutor<AccessUser> {
     Page<AccessUser> findAll(Pageable pageable);
+
+    AccessUser findByResourceId(String resourceId);
 }
