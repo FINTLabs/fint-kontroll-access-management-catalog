@@ -39,6 +39,14 @@ scopes = user_scopes {
     user_scopes := user_assignments[username][i].rolesandscopes[j].scopes
 }
 
+# Return scopes for user
+scopeslist[user_scopes] {
+    allow # Check if user is authorized
+    some i, j
+    username := input.user
+    user_scopes := user_assignments[username][i].rolesandscopes[j].scopes
+}
+
 # Check if user has role
 has_role(username, role) {
     some i, j
