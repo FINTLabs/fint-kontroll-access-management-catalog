@@ -1,10 +1,15 @@
 package no.fintlabs.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.orgunit.repository.OrgUnitInfo;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import no.fintlabs.user.dto.AccessUserDto;
+import no.fintlabs.user.dto.AccessUserOrgUnitsResponseDto;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import no.fintlabs.user.repository.AccessUserSearchCreator;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,66 +25,93 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
+@Tag(name = "User", description = "User API")
 @RestController
 @RequestMapping("/api/accessmanagement/v1/user")
 public class AccessUserController {
 
     private final AccessUserRepository accessUserRepository;
 
-    public AccessUserController(AccessUserRepository accessUserRepository) {
+    private final OrgUnitRepository orgUnitRepository;
+
+    public AccessUserController(AccessUserRepository accessUserRepository, OrgUnitRepository orgUnitRepository) {
         this.accessUserRepository = accessUserRepository;
+        this.orgUnitRepository = orgUnitRepository;
     }
 
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam(value = "name", required = false, defaultValue = "") String name,
-                                                           @RequestParam(value = "orgunitid", required = false, defaultValue = "") List<String> orgUnitIds,
-                                                           @RequestParam(value = "accessroleid", required = false, defaultValue = "") String accessRoleId,
+                                                           @RequestParam(value = "orgunitid", required = false, defaultValue = "")
+                                                           List<String> orgUnitIds,
+                                                           @RequestParam(value = "accessroleid", required = false, defaultValue = "")
+                                                           String accessRoleId,
                                                            @SortDefault(sort = "resourceId", direction = Sort.Direction.ASC)
-                                                           @PageableDefault(size = 100) Pageable pageable) {
+                                                           @ParameterObject @PageableDefault(size = 100) Pageable pageable) {
         log.info("Fetching all users with pagination {}", pageable);
 
         Specification<AccessUser> spec = AccessUserSearchCreator.createAccessUserSearch(name, orgUnitIds, accessRoleId);
 
         try {
             Page<AccessUser> accessUsers = accessUserRepository.findAll(spec, pageable == null ? Pageable.unpaged() : pageable);
-            return ResponseEntity.ok(mapAccessUserResponse(accessUsers));
+            return ResponseEntity.ok(AccessUserMapper.toAccessUserDtos(accessUsers));
         } catch (Exception e) {
             log.error("Error getting all users", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting users");
         }
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<AccessUserDto> getUser(@PathVariable("userId") String userId) {
-        log.info("Fetching user with userId {}", userId);
+    @GetMapping("/{resourceId}")
+    public ResponseEntity<AccessUserDto> getUser(@PathVariable("resourceId") String resourceId) {
+        log.info("Fetching user with resourceId {}", resourceId);
 
         try {
-            AccessUser accessUser = accessUserRepository.findById(userId)
+            AccessUser accessUser = accessUserRepository.findById(resourceId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
-            return ResponseEntity.ok(AccessUserMapper.toDto(accessUser));
+            return ResponseEntity.ok(AccessUserMapper.toAccessUserDto(accessUser));
         } catch (Exception e) {
             log.error("Error getting user", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting users");
         }
     }
 
-    private Map<String, Object> mapAccessUserResponse(Page<AccessUser> accessUsers) {
-        Map<String, Object> response = new HashMap<>();
+    @GetMapping("/{resourceId}/orgunits")
+    public ResponseEntity<AccessUserOrgUnitsResponseDto> getOrgUnits(@PathVariable String resourceId,
+                                                                     @RequestParam(required = false) String accessRoleId,
+                                                                     @RequestParam(required = false) String objectType,
+                                                                     @RequestParam(required = false) String orgUnitName,
+                                                                     @ParameterObject @PageableDefault(size = 100) Pageable pageable) {
 
-        response.put("users", accessUsers.getContent()
-                .stream()
-                .map(AccessUserMapper::toDto)
-                .collect(Collectors.toList()));
-        response.put("currentPage", accessUsers.getNumber());
-        response.put("totalItems", accessUsers.getTotalElements());
-        response.put("totalPages", accessUsers.getTotalPages());
-        return response;
+        log.info("Fetching orgunits for user with resourceId {}", resourceId);
+
+        try {
+            long startTime = System.currentTimeMillis();
+
+            Page<OrgUnitInfo> orgUnits =
+                    orgUnitRepository.findOrgUnitsForUserByFilters(resourceId, accessRoleId, objectType, orgUnitName, pageable);
+
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+
+            log.info("Execution time of findFilteredOrgUnits: " + duration + " milliseconds");
+
+            startTime = System.currentTimeMillis();
+
+            AccessUserOrgUnitsResponseDto mappedOrgUnits = AccessUserMapper.toAccessUserOrgUnitDto(orgUnits);
+
+            endTime = System.currentTimeMillis();
+            duration = endTime - startTime;
+
+            log.info("Execution time of mapOrgUnitsResponse2: " + duration + " milliseconds");
+
+            return ResponseEntity.ok(mappedOrgUnits);
+        } catch (Exception e) {
+            log.error("Error getting orgunits for user", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting orgunits for user");
+        }
     }
 
 }

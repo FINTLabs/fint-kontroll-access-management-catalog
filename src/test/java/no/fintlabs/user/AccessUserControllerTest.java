@@ -1,5 +1,7 @@
 package no.fintlabs.user;
 
+import no.fintlabs.orgunit.repository.OrgUnitInfo;
+import no.fintlabs.orgunit.repository.OrgUnitRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +36,13 @@ public class AccessUserControllerTest {
     @MockBean
     private AccessUserRepository accessUserRepositoryMock;
 
+    @MockBean
+    private OrgUnitRepository orgUnitRepositoryMock;
+
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new AccessUserController(accessUserRepositoryMock))
+                .standaloneSetup(new AccessUserController(accessUserRepositoryMock, orgUnitRepositoryMock))
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
 
@@ -62,8 +67,8 @@ public class AccessUserControllerTest {
                                 .param("page", "0")
                                 .param("size", "10")
                                 .param("sort", "userName,asc")
-                                .param("name", "") // Add other expected parameters
-                                .param("orgunitid", "") // If expecting a list, you might need to handle this differently
+                                .param("name", "")
+                                .param("orgunitid", "")
                                 .param("accessroleid", ""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
@@ -155,4 +160,42 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].orgUnitId").value("198"));
     }
 
+    @Test
+    public void shouldGetOrgUnitsForUser() throws Exception {
+        when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1"))));
+
+        mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value("1"))
+                .andExpect(jsonPath("$.totalPages").value("1"))
+                .andExpect(jsonPath("$.currentPage").value("0"))
+                .andExpect(jsonPath("$.accessRoles").isArray())
+                .andExpect(jsonPath("$.accessRoles[0].accessRoleId").value("ata"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"));
+    }
+
+    @Test
+    public void shouldGetOrgUnitsForUserWithFilters() throws Exception {
+        when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1"))));
+
+        mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits")
+                                .param("accessroleid", "ata")
+                                .param("objecttype", "orgunit")
+                                .param("orgunitname", "name1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value("1"))
+                .andExpect(jsonPath("$.totalPages").value("1"))
+                .andExpect(jsonPath("$.currentPage").value("0"))
+                .andExpect(jsonPath("$.accessRoles").isArray())
+                .andExpect(jsonPath("$.accessRoles[0].accessRoleId").value("ata"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"));
+    }
 }

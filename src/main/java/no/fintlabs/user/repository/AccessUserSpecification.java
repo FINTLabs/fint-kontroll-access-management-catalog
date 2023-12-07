@@ -12,10 +12,10 @@ public class AccessUserSpecification {
 
     public static Specification<AccessUser> hasOrganisationUnitIds(List<String> orgUnitIds) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            // Join the AccessUserOrgUnit entity
+            // Join the AccessUserOrgUnitDto entity
             Join<AccessUser, AccessUserOrgUnit> orgUnitJoin = root.join("accessUserOrgUnits");
 
-            // Use the orgUnit association from AccessUserOrgUnit to get the actual orgUnitId
+            // Use the orgUnit association from AccessUserOrgUnitDto to get the actual orgUnitId
             Path<String> orgUnitIdPath = orgUnitJoin.get("orgUnit").get("orgUnitId");
 
             // Construct the 'in' clause for the search
