@@ -1,6 +1,7 @@
 package no.fintlabs.accessassignment;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.accessassignment.repository.AccessAssignment;
@@ -24,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "Access assignment", description = "Access assignment API - CRUD for access assignments")
 @RestController
 @RequestMapping("/api/accessmanagement/v1/accessassignment")
 public class AccessAssignmentController {

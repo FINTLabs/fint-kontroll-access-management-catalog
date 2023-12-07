@@ -1,5 +1,6 @@
 package no.fintlabs.accesspermission;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.accesspermission.repository.AccessPermission;
 import no.fintlabs.accesspermission.repository.AccessPermissionRepository;
@@ -22,6 +23,7 @@ import static no.fintlabs.accesspermission.AccessPermissionMapper.toAccessRolePe
 import static no.fintlabs.accesspermission.AccessPermissionMapper.toAccessRolePermissionDtos;
 
 @Slf4j
+@Tag(name = "Access permission", description = "Access permission API - CRUD for access permissions")
 @RestController
 @RequestMapping("/api/accessmanagement/v1/accesspermission")
 public class AccessPermissionController {

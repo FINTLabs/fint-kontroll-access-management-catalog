@@ -1,5 +1,6 @@
 package no.fintlabs.feature;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.feature.repository.Feature;
 import no.fintlabs.feature.repository.FeatureRepository;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Tag(name = "Feature", description = "Feature API - CRUD for features")
 @RestController
 @RequestMapping("/api/accessmanagement/v1/feature")
 public class FeatureController {
