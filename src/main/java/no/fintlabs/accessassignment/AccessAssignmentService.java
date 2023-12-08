@@ -83,7 +83,7 @@ public class AccessAssignmentService {
                 .map(Scope::getId)
                 .collect(Collectors.toSet());
 
-        if(scopeIds.isEmpty()) {
+        if (scopeIds.isEmpty()) {
             log.info("No assignments to delete for user {}", accessUser.getResourceId());
             return;
         }
@@ -94,7 +94,8 @@ public class AccessAssignmentService {
                 .setParameter("ids", scopeIds)
                 .executeUpdate();
 
-        log.info("Delete from accessassignment where user_id = {} and access_role_id = {}", accessUser.getResourceId(), accessRole.getAccessRoleId());
+        log.info("Delete from accessassignment where user_id = {} and access_role_id = {}", accessUser.getResourceId(),
+                 accessRole.getAccessRoleId());
         // Delete AccessAssignments with given role for the user
         entityManager.createNativeQuery("DELETE FROM accessassignment WHERE user_id = :userId AND access_role_id = :roleId")
                 .setParameter("userId", accessUser.getResourceId())
@@ -119,41 +120,20 @@ public class AccessAssignmentService {
 
     @Transactional
     public void deleteAllAssignmentsByResourceId(AccessUser accessUser) {
-        // Collect all Scope IDs associated with these assignments
         Set<Long> scopeIds = accessUser.getAccessAssignments().stream()
                 .flatMap(assignment -> assignment.getScopes().stream())
                 .map(Scope::getId)
                 .collect(Collectors.toSet());
 
-        if(scopeIds.isEmpty()) {
+        if (scopeIds.isEmpty()) {
             log.info("No assignments to delete for user {}", accessUser.getResourceId());
             return;
         }
 
-        // Delete entries from assignment_scope join table
-        entityManager.createNativeQuery("DELETE FROM assignment_scope WHERE scope_id IN :ids")
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
-
-        // Delete AccessAssignments for the user
-        entityManager.createNativeQuery("DELETE FROM accessassignment WHERE user_id = :userId")
-                .setParameter("userId", accessUser.getResourceId())
-                .executeUpdate();
-
-        // Delete entries from scope_orgunit join table for scopes that are about to be deleted using native SQL
-        entityManager.createNativeQuery("DELETE FROM scope_orgunit WHERE scope_id IN :ids")
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
-
-        // Now, delete scopes if they are no longer referenced in assignment_scope using native SQL
-        entityManager.createNativeQuery(
-                        "DELETE FROM scope " +
-                        "WHERE id IN :ids AND NOT EXISTS (" +
-                        "SELECT 1 FROM assignment_scope WHERE scope_id = id" +
-                        ")"
-                )
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
+        accessAssignmentRepository.deleteAssignmentScopesByScopeIds(scopeIds);
+        accessAssignmentRepository.deleteAccessAssignmentsByUserId(accessUser.getResourceId());
+        accessAssignmentRepository.deleteScopeOrgUnitsByScopeIds(scopeIds);
+        accessAssignmentRepository.deleteScopesByScopeIds(scopeIds);
     }
 
     @Transactional
@@ -166,23 +146,22 @@ public class AccessAssignmentService {
             throw new IllegalArgumentException("OrgUnit with id " + orgUnitId + " does not exist");
         }
 
-        entityManager.createNativeQuery("DELETE FROM scope_orgunit WHERE scope_id = :scopeId AND org_unit_id = :orgUnitId")
-                .setParameter("scopeId", scopeId)
-                .setParameter("orgUnitId", orgUnitId)
-                .executeUpdate();
+        orgUnitRepository.deleteOrgUnitFromScope(scopeId, orgUnitId);
+        accessAssignmentRepository.deleteAssignmentScopeWithoutOrgs(scopeId);
+        accessAssignmentRepository.deleteScopeWithoutAssignmentScope(scopeId);
     }
 
-    @Transactional
-    public void deleteOrgUnitsForUserByObjectType(String userId, String objectType) {
-        entityManager.createNativeQuery(
-                        "DELETE FROM scope_orgunit so " +
-                        "USING scope s " +
-                        "WHERE so.scope_id = s.id " +
-                        "AND s.id IN (SELECT scope_id FROM accessassignment aa WHERE aa.user_id = :userId) " +
-                        "AND s.objecttype = :objectType"
-                )
-                .setParameter("userId", userId)
-                .setParameter("objectType", objectType)
-                .executeUpdate();
-    }
+//    @Transactional
+//    public void deleteOrgUnitsForUserByObjectType(String userId, String objectType) {
+//        entityManager.createNativeQuery(
+//                        "DELETE FROM scope_orgunit so " +
+//                        "USING scope s " +
+//                        "WHERE so.scope_id = s.id " +
+//                        "AND s.id IN (SELECT scope_id FROM accessassignment aa WHERE aa.user_id = :userId) " +
+//                        "AND s.objecttype = :objectType"
+//                )
+//                .setParameter("userId", userId)
+//                .setParameter("objectType", objectType)
+//                .executeUpdate();
+//    }
 }

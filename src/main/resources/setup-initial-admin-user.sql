@@ -1,5 +1,5 @@
 WITH user_id_query AS (
-    SELECT resource_id FROM accessuser WHERE user_name = 'morten.solberg@vigoiks.no'
+    SELECT resource_id FROM accessuser WHERE user_name = 'erling.jahr@vigoiks.no'
 )
 
    , new_assignment AS (

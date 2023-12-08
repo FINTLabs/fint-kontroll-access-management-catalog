@@ -3,8 +3,11 @@ package no.fintlabs.orgunit.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,4 +28,8 @@ public interface OrgUnitRepository extends JpaRepository<OrgUnit, String> {
     Page<OrgUnitInfo> findOrgUnitsForUserByFilters(String resourceId, String accessRoleId, String objectType, String orgUnitName,
                                                    Pageable pageable);
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM scope_orgunit WHERE scope_id = :scopeId AND org_unit_id = :orgUnitId", nativeQuery = true)
+    void deleteOrgUnitFromScope(@Param("scopeId") Long scopeId, @Param("orgUnitId") String orgUnitId);
 }
