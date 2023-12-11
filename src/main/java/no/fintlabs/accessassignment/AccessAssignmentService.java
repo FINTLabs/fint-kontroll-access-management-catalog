@@ -125,16 +125,23 @@ public class AccessAssignmentService {
                 .map(Scope::getId)
                 .collect(Collectors.toSet());
 
-        if (scopeIds.isEmpty()) {
-            log.info("No assignments to delete for user {}", accessUser.getResourceId());
-            return;
+
+        if (!scopeIds.isEmpty()) {
+            accessAssignmentRepository.deleteAssignmentScopesByScopeIds(scopeIds);
+            accessAssignmentRepository.deleteScopeOrgUnitsByScopeIds(scopeIds);
+            accessAssignmentRepository.deleteScopesByScopeIds(scopeIds);
         }
 
-        accessAssignmentRepository.deleteAssignmentScopesByScopeIds(scopeIds);
-        accessAssignmentRepository.deleteAccessAssignmentsByUserId(accessUser.getResourceId());
-        accessAssignmentRepository.deleteScopeOrgUnitsByScopeIds(scopeIds);
-        accessAssignmentRepository.deleteScopesByScopeIds(scopeIds);
+        if (!accessUser.getAccessAssignments().isEmpty()) {
+            accessAssignmentRepository.deleteAccessAssignmentsByUserId(accessUser.getResourceId());
+        }
+
+        // delete role also
     }
+
+    // nytt kall, slett rolle med alle assignments fra bruker
+
+    // nytt kall, slett rolles knytninger med valg objekttype
 
     @Transactional
     public void deleteOrgUnitFromScope(Long scopeId, String orgUnitId) {
