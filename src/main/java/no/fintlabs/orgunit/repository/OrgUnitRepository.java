@@ -16,7 +16,7 @@ public interface OrgUnitRepository extends JpaRepository<OrgUnit, String> {
 
     Optional<OrgUnit> findByOrgUnitId(String orgUnitId);
 
-    @Query("SELECT new no.fintlabs.orgunit.repository.OrgUnitInfo(aa.accessRole.accessRoleId, s.id, s.objectType, ou.name) " +
+    @Query("SELECT new no.fintlabs.orgunit.repository.OrgUnitInfo(aa.accessRole.accessRoleId, s.id, s.objectType, ou.name, ou.orgUnitId) " +
            "FROM AccessUser au " +
            "JOIN au.accessAssignments aa " +
            "JOIN aa.scopes s " +

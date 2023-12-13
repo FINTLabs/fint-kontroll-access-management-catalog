@@ -10,4 +10,5 @@ public class OrgUnitInfo {
     private Long scopeId;
     private String objectType;
     private String name;
+    private String orgUnitId;
 }

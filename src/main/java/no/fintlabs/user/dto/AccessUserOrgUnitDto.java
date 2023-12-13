@@ -12,4 +12,5 @@ public class AccessUserOrgUnitDto {
     private Long scopeId;
     private String objectType;
     private String name;
+    private String orgUnitId;
 }

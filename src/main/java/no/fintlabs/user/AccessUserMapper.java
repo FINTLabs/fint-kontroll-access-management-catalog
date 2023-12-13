@@ -82,6 +82,6 @@ public class AccessUserMapper {
     }
 
     private static AccessUserOrgUnitDto createOrgUnitData(OrgUnitInfo orgUnitInfo) {
-        return new AccessUserOrgUnitDto(orgUnitInfo.getScopeId(), orgUnitInfo.getObjectType(), orgUnitInfo.getName());
+        return new AccessUserOrgUnitDto(orgUnitInfo.getScopeId(), orgUnitInfo.getObjectType(), orgUnitInfo.getName(), orgUnitInfo.getOrgUnitId());
     }
 }

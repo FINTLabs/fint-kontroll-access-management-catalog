@@ -163,7 +163,7 @@ public class AccessUserControllerTest {
     @Test
     public void shouldGetOrgUnitsForUser() throws Exception {
         when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
-                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1"))));
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1", "198"))));
 
         mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits"))
                 .andExpect(status().isOk())
@@ -175,13 +175,14 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))
-                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"));
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].orgUnitId").value("198"));
     }
 
     @Test
     public void shouldGetOrgUnitsForUserWithFilters() throws Exception {
         when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
-                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1"))));
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1", "198"))));
 
         mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits")
                                 .param("accessroleid", "ata")
@@ -196,6 +197,7 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))
-                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"));
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].scopeId").value("1"))
+                .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].orgUnitId").value("198"));
     }
 }
