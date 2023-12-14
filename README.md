@@ -23,3 +23,5 @@ Beta w/portforward (update port with your own): http://localhost:53212/beta/fint
 Lokalt: http://localhost:8080/v3/api-docs
 
 Beta w/portforward (update port with your own): http://localhost:53212/beta/fintlabs-no/v3/api-docs
+
+test
