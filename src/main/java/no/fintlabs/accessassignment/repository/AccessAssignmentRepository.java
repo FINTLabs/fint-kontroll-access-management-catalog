@@ -19,6 +19,11 @@ public interface AccessAssignmentRepository extends JpaRepository<AccessAssignme
 
     @Modifying
     @Transactional
+    @Query(value = "DELETE FROM accessassignment WHERE user_id = :userId AND access_role_id = :roleId", nativeQuery = true)
+    void deleteAccessAssignmentsByUserIdAndRole(String userId, String roleId);
+
+    @Modifying
+    @Transactional
     @Query(value = "DELETE FROM assignment_scope WHERE scope_id IN :scopeIds", nativeQuery = true)
     void deleteAssignmentScopesByScopeIds(Set<Long> scopeIds);
 
@@ -54,4 +59,13 @@ public interface AccessAssignmentRepository extends JpaRepository<AccessAssignme
                    "SELECT 1 FROM assignment_scope WHERE scope_id = :scopeId" +
                    ")", nativeQuery = true)
     void deleteScopeWithoutAssignmentScope(Long scopeId);
+
+    @Query(value = "SELECT count(*) " +
+           "FROM accessuser au " +
+           "JOIN accessassignment aa ON au.resource_id = aa.user_id " +
+           "JOIN assignment_scope az ON az.assignment_id = aa.id " +
+           "JOIN scope s ON s.id = az.scope_id " +
+           "WHERE au.resource_id = :resourceId " +
+           "AND aa.access_role_id = :accessRoleId ", nativeQuery = true)
+    int countAssignmentScopesByUserRole(String resourceId, String accessRoleId);
 }

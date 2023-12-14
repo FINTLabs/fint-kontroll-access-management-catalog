@@ -122,7 +122,7 @@ public class AccessAssignmentRepositoryIntegrationTest {
         accessUser.setAccessAssignments(accessAssignments);
         AccessUser updatedAccessUser = accessUserRepository.save(accessUser);
 
-        verifyDataInserted(accessUser);
+        verifyDataInserted(accessUser, 1);
 
         accessAssignmentService.deleteAllAssignmentsByResourceId(updatedAccessUser);
 
@@ -135,6 +135,100 @@ public class AccessAssignmentRepositoryIntegrationTest {
 
         assertThat(accessUserRepository.count()).isEqualTo(1);
     }
+
+    @Test
+    public void shouldDeleteAllAssignmentsByResourceIdAndRoleAndObjectType() {
+        OrgUnit orgUnit1 = createOrgUnit("198", "org 1");
+        OrgUnit orgUnit2 = createOrgUnit("153", "org 2");
+
+        Scope scope = createScope("orgunit", List.of(orgUnit1, orgUnit2));
+
+        AccessUser accessUser = createAccessUser();
+        AccessRole accessRole = createAccessRole("ata", "Applikasjonstilgangsadministrator");
+
+        AccessAssignment accessAssignment = createAccessAssignment(List.of(scope), accessUser, accessRole);
+
+        List<AccessAssignment> accessAssignments = new ArrayList<>();
+        accessAssignments.add(accessAssignment);
+
+        accessUser.setAccessAssignments(accessAssignments);
+        accessUserRepository.save(accessUser);
+
+        verifyDataInserted(accessUser, 1);
+
+        accessAssignmentService.deleteAllAssignmentsByResourceIdAndRoleAndObjectType(accessUser, accessRole, "orgunit");
+
+        assertThat(accessUserRepository.findAll().size()).isEqualTo(1);
+        assertThat(accessAssignmentRepository.findAll().size()).isEqualTo(0);
+        assertThat(scopeRepository.findAll().size()).isEqualTo(0);
+        assertThat(accessAssignmentRepository.countAssignmentScopesByScopeId(scope.getId())).isEqualTo(0);
+        assertThat(scopeRepository.countScopeOrgUnitsByScopeId(scope.getId())).isEqualTo(0);
+        assertThat(orgUnitRepository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldDeleteAllAssignmentsByResourceIdAndRoleAndObjectTypeRemainingScopes() {
+        OrgUnit orgUnit1 = createOrgUnit("198", "org 1");
+        OrgUnit orgUnit2 = createOrgUnit("153", "org 2");
+
+        Scope orgUnitScope = createScope("orgunit", List.of(orgUnit1, orgUnit2));
+        Scope userScope = createScope("user", List.of(orgUnit1, orgUnit2));
+
+        AccessUser accessUser = createAccessUser();
+        AccessRole accessRole = createAccessRole("ata", "Applikasjonstilgangsadministrator");
+
+        AccessAssignment accessAssignment = createAccessAssignment(List.of(orgUnitScope, userScope), accessUser, accessRole);
+
+        List<AccessAssignment> accessAssignments = new ArrayList<>();
+        accessAssignments.add(accessAssignment);
+
+        accessUser.setAccessAssignments(accessAssignments);
+        accessUserRepository.save(accessUser);
+
+        verifyDataInserted(accessUser, 2);
+
+        accessAssignmentService.deleteAllAssignmentsByResourceIdAndRoleAndObjectType(accessUser, accessRole, "orgunit");
+
+        assertThat(accessUserRepository.findAll().size()).isEqualTo(1);
+        assertThat(accessAssignmentRepository.findAll().size()).isEqualTo(1);
+        assertThat(scopeRepository.findAll().size()).isEqualTo(1);
+        assertThat(accessAssignmentRepository.countAssignmentScopesByScopeId(orgUnitScope.getId())).isEqualTo(0);
+        assertThat(accessAssignmentRepository.countAssignmentScopesByScopeId(userScope.getId())).isEqualTo(1);
+        assertThat(scopeRepository.countScopeOrgUnitsByScopeId(orgUnitScope.getId())).isEqualTo(0);
+        assertThat(scopeRepository.countScopeOrgUnitsByScopeId(userScope.getId())).isEqualTo(2);
+        assertThat(orgUnitRepository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldDeleteAllAssignmentsByResourceIdAndRole() {
+        OrgUnit orgUnit1 = createOrgUnit("198", "org 1");
+        OrgUnit orgUnit2 = createOrgUnit("153", "org 2");
+
+        Scope scope = createScope("orgunit", List.of(orgUnit1, orgUnit2));
+
+        AccessUser accessUser = createAccessUser();
+        AccessRole accessRole = createAccessRole("ata", "Applikasjonstilgangsadministrator");
+
+        AccessAssignment accessAssignment = createAccessAssignment(List.of(scope), accessUser, accessRole);
+
+        List<AccessAssignment> accessAssignments = new ArrayList<>();
+        accessAssignments.add(accessAssignment);
+
+        accessUser.setAccessAssignments(accessAssignments);
+        accessUserRepository.save(accessUser);
+
+        verifyDataInserted(accessUser, 1);
+
+        accessAssignmentService.deleteAllAssignmentsByResourceIdAndRole(accessUser, accessRole);
+
+        assertThat(accessUserRepository.findAll().size()).isEqualTo(1);
+        assertThat(accessAssignmentRepository.findAll().size()).isEqualTo(0);
+        assertThat(scopeRepository.findAll().size()).isEqualTo(0);
+        assertThat(accessAssignmentRepository.countAssignmentScopesByScopeId(scope.getId())).isEqualTo(0);
+        assertThat(scopeRepository.countScopeOrgUnitsByScopeId(scope.getId())).isEqualTo(0);
+        assertThat(orgUnitRepository.findAll().size()).isEqualTo(2);
+    }
+
 
     @Test
     public void shouldDeleteScopesWhenAllOrgUnitsAreDeletedFromScope() {
@@ -154,7 +248,7 @@ public class AccessAssignmentRepositoryIntegrationTest {
         accessUser.setAccessAssignments(accessAssignments);
         AccessUser updatedAccessUser = accessUserRepository.save(accessUser);
 
-        verifyDataInserted(accessUser);
+        verifyDataInserted(accessUser, 1);
 
         accessAssignmentService.deleteOrgUnitFromScope(scope.getId(), orgUnit1.getOrgUnitId());
         accessAssignmentService.deleteOrgUnitFromScope(scope.getId(), orgUnit2.getOrgUnitId());
@@ -187,7 +281,7 @@ public class AccessAssignmentRepositoryIntegrationTest {
         accessUser.setAccessAssignments(accessAssignments);
         AccessUser updatedAccessUser = accessUserRepository.save(accessUser);
 
-        verifyDataInserted(accessUser);
+        verifyDataInserted(accessUser, 1);
 
         accessAssignmentService.deleteOrgUnitFromScope(scope.getId(), orgUnit1.getOrgUnitId());
 
@@ -201,15 +295,15 @@ public class AccessAssignmentRepositoryIntegrationTest {
         assertThat(accessUserRepository.count()).isEqualTo(1);
     }
 
-    private void verifyDataInserted(AccessUser accessUser) {
+    private void verifyDataInserted(AccessUser accessUser, int scopes) {
         assertThat(accessUserRepository.findAll().size()).isEqualTo(1);
         assertThat(accessAssignmentRepository.findAll().size()).isEqualTo(1);
-        assertThat(scopeRepository.findAll().size()).isEqualTo(1);
+        assertThat(scopeRepository.findAll().size()).isEqualTo(scopes);
         assertThat(orgUnitRepository.findAll().size()).isEqualTo(2);
 
         accessUserRepository.findById(accessUser.getResourceId()).ifPresent(foundAccessUser -> {
             assertThat(foundAccessUser.getAccessAssignments()).hasSize(1);
-            assertThat(foundAccessUser.getAccessAssignments().get(0).getScopes()).hasSize(1);
+            assertThat(foundAccessUser.getAccessAssignments().get(0).getScopes()).hasSize(scopes);
         });
     }
 

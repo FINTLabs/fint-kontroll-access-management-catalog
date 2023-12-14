@@ -76,46 +76,40 @@ public class AccessAssignmentService {
 
     @Transactional
     public void deleteAllAssignmentsByResourceIdAndRole(AccessUser accessUser, AccessRole accessRole) {
-        // Collect all Scope IDs associated with these assignments and role
         Set<Long> scopeIds = accessUser.getAccessAssignments().stream()
                 .filter(assignment -> assignment.getAccessRole().equals(accessRole))
                 .flatMap(assignment -> assignment.getScopes().stream())
                 .map(Scope::getId)
                 .collect(Collectors.toSet());
 
-        if (scopeIds.isEmpty()) {
-            log.info("No assignments to delete for user {}", accessUser.getResourceId());
-            return;
+        deleteAssignmentsRelations(scopeIds);
+
+        if (!accessUser.getAccessAssignments().isEmpty()) {
+            accessAssignmentRepository.deleteAccessAssignmentsByUserIdAndRole(accessUser.getResourceId(), accessRole.getAccessRoleId());
+        }
+    }
+
+    @Transactional
+    public void deleteAllAssignmentsByResourceIdAndRoleAndObjectType(AccessUser accessUser, AccessRole accessRole, String objectType) {
+        Set<Long> scopesToDelete = accessUser.getAccessAssignments().stream()
+                .filter(assignment -> assignment.getAccessRole().equals(accessRole))
+                .flatMap(assignment -> assignment.getScopes().stream())
+                .filter(scope -> scope.getObjectType().equals(objectType))
+                .map(Scope::getId)
+                .collect(Collectors.toSet());
+
+
+        if (!scopesToDelete.isEmpty()) {
+            accessAssignmentRepository.deleteAssignmentScopesByScopeIds(scopesToDelete);
+            accessAssignmentRepository.deleteScopeOrgUnitsByScopeIds(scopesToDelete);
+            accessAssignmentRepository.deleteScopesByScopeIds(scopesToDelete);
         }
 
-        log.info("Delete from assignment_scope where assignment_id in {}", scopeIds);
-        // Delete entries from assignment_scope join table
-        entityManager.createNativeQuery("DELETE FROM assignment_scope WHERE scope_id IN :ids")
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
+        int scopes = accessAssignmentRepository.countAssignmentScopesByUserRole(accessUser.getResourceId(), accessRole.getAccessRoleId());
 
-        log.info("Delete from accessassignment where user_id = {} and access_role_id = {}", accessUser.getResourceId(),
-                 accessRole.getAccessRoleId());
-        // Delete AccessAssignments with given role for the user
-        entityManager.createNativeQuery("DELETE FROM accessassignment WHERE user_id = :userId AND access_role_id = :roleId")
-                .setParameter("userId", accessUser.getResourceId())
-                .setParameter("roleId", accessRole.getAccessRoleId())
-                .executeUpdate();
-
-        // Delete entries from scope_orgunit join table for scopes that are about to be deleted using native SQL
-        entityManager.createNativeQuery("DELETE FROM scope_orgunit WHERE scope_id IN :ids")
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
-
-        // Now, delete scopes if they are no longer referenced in assignment_scope using native SQL
-        entityManager.createNativeQuery(
-                        "DELETE FROM scope " +
-                        "WHERE id IN :ids AND NOT EXISTS (" +
-                        "SELECT 1 FROM assignment_scope WHERE scope_id = id" +
-                        ")"
-                )
-                .setParameter("ids", scopeIds)
-                .executeUpdate();
+        if(scopes == 0) {
+            accessAssignmentRepository.deleteAccessAssignmentsByUserIdAndRole(accessUser.getResourceId(), accessRole.getAccessRoleId());
+        }
     }
 
     @Transactional
@@ -135,13 +129,7 @@ public class AccessAssignmentService {
         if (!accessUser.getAccessAssignments().isEmpty()) {
             accessAssignmentRepository.deleteAccessAssignmentsByUserId(accessUser.getResourceId());
         }
-
-        // delete role also
     }
-
-    // nytt kall, slett rolle med alle assignments fra bruker
-
-    // nytt kall, slett rolles knytninger med valg objekttype
 
     @Transactional
     public void deleteOrgUnitFromScope(Long scopeId, String orgUnitId) {
@@ -158,17 +146,11 @@ public class AccessAssignmentService {
         accessAssignmentRepository.deleteScopeWithoutAssignmentScope(scopeId);
     }
 
-//    @Transactional
-//    public void deleteOrgUnitsForUserByObjectType(String userId, String objectType) {
-//        entityManager.createNativeQuery(
-//                        "DELETE FROM scope_orgunit so " +
-//                        "USING scope s " +
-//                        "WHERE so.scope_id = s.id " +
-//                        "AND s.id IN (SELECT scope_id FROM accessassignment aa WHERE aa.user_id = :userId) " +
-//                        "AND s.objecttype = :objectType"
-//                )
-//                .setParameter("userId", userId)
-//                .setParameter("objectType", objectType)
-//                .executeUpdate();
-//    }
+    private void deleteAssignmentsRelations(Set<Long> scopeIds) {
+        if (!scopeIds.isEmpty()) {
+            accessAssignmentRepository.deleteAssignmentScopesByScopeIds(scopeIds);
+            accessAssignmentRepository.deleteScopeOrgUnitsByScopeIds(scopeIds);
+            accessAssignmentRepository.deleteScopesByScopeIds(scopeIds);
+        }
+    }
 }

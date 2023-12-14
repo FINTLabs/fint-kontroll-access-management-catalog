@@ -10,7 +10,7 @@ public class AccessAssignmentMapper {
     public static AccessAssignmentDto toDto(AccessAssignment accessAssignment) {
         return new AccessAssignmentDto(accessAssignment.getId(), accessAssignment.getAccessRole().getAccessRoleId(),
                                        ScopeMapper.toDto(accessAssignment.getScopes()),
-                                       accessAssignment.getAccessUser().getUserId());
+                                       accessAssignment.getAccessUser().getResourceId());
     }
 
     public static List<AccessAssignmentDto> toDto(List<AccessAssignment> accessAssignments) {

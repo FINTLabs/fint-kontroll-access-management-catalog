@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,6 +120,31 @@ public class AccessAssignmentController {
         }
     }
 
+    @DeleteMapping("/user/{resourceId}/role/{roleId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccessAssignmentByRoleAndObjectType(@PathVariable(name = "resourceId") String resourceId,
+                                             @PathVariable(name = "roleId") String roleId,
+                                             @RequestParam(name = "objectType", required = false) String objectType) {
+
+        log.info("Deleting accessassignment for user {} with role {}, objecttype {}", resourceId, roleId, objectType);
+
+        try {
+            AccessUser accessUser = accessUserRepository.findByResourceId(resourceId);
+            AccessRole accessRole = accessRoleRepository.findById(roleId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
+
+            if(objectType == null || objectType.equalsIgnoreCase("all")) {
+                accessAssignmentService.deleteAllAssignmentsByResourceIdAndRole(accessUser, accessRole);
+            } else {
+                accessAssignmentService.deleteAllAssignmentsByResourceIdAndRoleAndObjectType(accessUser, accessRole, objectType);
+            }
+        } catch (Exception e) {
+            log.error("Error deleting accessassignment for user {} and role {}", resourceId, roleId, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                              String.format("Failed to delete assignments for user %s and role %s", resourceId, roleId));
+        }
+    }
+
     @DeleteMapping("/user/{resourceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccessAssignment(@PathVariable(name = "resourceId") String resourceId) {
@@ -135,6 +161,7 @@ public class AccessAssignmentController {
     }
 
     @DeleteMapping("/scope/{scopeId}/orgunit/{orgUnitId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOrgUnitFromScope(@PathVariable(name = "scopeId") Long scopeId, @PathVariable(name = "orgUnitId") String orgUnitId) {
         log.info("Deleting orgunit {} from scope {}", orgUnitId, scopeId);
 
@@ -146,20 +173,4 @@ public class AccessAssignmentController {
                                               String.format("Failed to delete orgunit %s from scope %s", orgUnitId, scopeId));
         }
     }
-
-    /*@DeleteMapping("/scope/{scopeId}/orgunit/{orgUnitId}")
-    public void deleteOrgUnitsForUserByObjectType(@PathVariable(name = "scopeId") Long scopeId, @PathVariable(name = "orgUnitId") String orgUnitId) {
-        log.info("Deleting orgunit {} from scope {}", orgUnitId, scopeId);
-
-        try {
-            accessAssignmentService.deleteOrgUnitFromScope(scopeId, orgUnitId);
-        } catch (Exception e) {
-            log.error("Error deleting orgunit {} from scope {}", orgUnitId, scopeId, e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                              String.format("Failed to delete orgunit %s from scope %s", orgUnitId, scopeId));
-        }
-    }*/
-    //deleteOrgUnitsForUserByObjectType
-
-
 }

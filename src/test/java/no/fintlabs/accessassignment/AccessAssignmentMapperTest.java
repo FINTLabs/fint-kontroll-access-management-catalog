@@ -19,7 +19,7 @@ class AccessAssignmentMapperTest {
         assertNotNull(dto);
         assertEquals(999L, dto.id());
         assertEquals("ata", dto.accessRoleId());
-        assertEquals("user1", dto.userId());
+        assertEquals("123", dto.userId());
         assertEquals(1L, dto.scopes().get(0).id());
         assertEquals(2, dto.scopes().get(0).orgUnits().size());
         assertEquals("198", dto.scopes().get(0).orgUnits().get(0).orgUnitId());
@@ -37,7 +37,7 @@ class AccessAssignmentMapperTest {
         AccessAssignmentDto dto = dtos.get(0);
         assertEquals(999L, dto.id());
         assertEquals("ata", dto.accessRoleId());
-        assertEquals("user1", dto.userId());
+        assertEquals("123", dto.userId());
         assertEquals(1L, dto.scopes().get(0).id());
         assertEquals(2, dto.scopes().get(0).orgUnits().size());
         assertEquals("198", dto.scopes().get(0).orgUnits().get(0).orgUnitId());
