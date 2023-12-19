@@ -10,6 +10,7 @@ import no.fintlabs.accessrole.AccessRoleRepository;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,20 @@ public class AccessAssignmentController {
         this.accessUserRepository = accessUserRepository;
         this.accessRoleRepository = accessRoleRepository;
     }
+
+    @GetMapping("/objecttypes")
+    public ResponseEntity<List<String>> getObjectTypes() {
+        log.info("Fetching all objecttypes");
+
+        try {
+            List<String> objectTypes = accessAssignmentService.getObjectTypes();
+            return ResponseEntity.ok(objectTypes);
+        } catch (Exception e) {
+            log.error("Error getting all objecttypes", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting objecttypes");
+        }
+    }
+
 
     @GetMapping("/user/{resourceId}")
     @ResponseBody

@@ -77,7 +77,6 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.totalPages").value("1"))
                 .andExpect(jsonPath("$.currentPage").value("0"))
                 .andExpect(jsonPath("$.users[0].resourceId").value("1"))
-                .andExpect(jsonPath("$.users[0].userId").value("1"))
                 .andExpect(jsonPath("$.users[0].userName").value("morten.solberg@vigoiks.no"))
                 .andExpect(jsonPath("$.users[0].firstName").value("Morten"))
                 .andExpect(jsonPath("$.users[0].lastName").value("Solberg"));
@@ -114,19 +113,12 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.totalPages").value("1"))
                 .andExpect(jsonPath("$.currentPage").value("0"))
                 .andExpect(jsonPath(user + ".resourceId").value("1"))
-                .andExpect(jsonPath(user + ".userId").value("1"))
                 .andExpect(jsonPath(user + ".userName").value("morten.solberg@vigoiks.no"))
                 .andExpect(jsonPath(user + ".firstName").value("Morten"))
                 .andExpect(jsonPath(user + ".lastName").value("Solberg"))
                 .andExpect(jsonPath(user + ".roles").isArray())
                 .andExpect(jsonPath(roles + ".roleId").value("ata"))
-                .andExpect(jsonPath(roles + ".roleName").value("Applikasjonstilgangsadministrator"))
-                .andExpect(jsonPath(scopes).isArray())
-                .andExpect(jsonPath(scopes + "[0].scopeId").value(1L))
-                .andExpect(jsonPath(scopes + "[0].objectType").value("orgunit"))
-                .andExpect(jsonPath(scopes + "[0].orgUnits").isArray())
-                .andExpect(jsonPath(scopes + "[0].orgUnits.[0].name").value("OrgUnit1"))
-                .andExpect(jsonPath(scopes + "[0].orgUnits.[0].orgUnitId").value("198"));
+                .andExpect(jsonPath(roles + ".roleName").value("Applikasjonstilgangsadministrator"));
     }
 
     @Test
@@ -145,19 +137,12 @@ public class AccessUserControllerTest {
         mockMvc.perform(get("/api/accessmanagement/v1/user/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resourceId").value("1"))
-                .andExpect(jsonPath("$.userId").value("1"))
                 .andExpect(jsonPath("$.userName").value("morten.solberg@vigoiks.no"))
                 .andExpect(jsonPath("$.firstName").value("Morten"))
                 .andExpect(jsonPath("$.lastName").value("Solberg"))
                 .andExpect(jsonPath("$.roles").isArray())
                 .andExpect(jsonPath("$.roles[0].roleId").value("ata"))
-                .andExpect(jsonPath("$.roles[0].roleName").value("Applikasjonstilgangsadministrator"))
-                .andExpect(jsonPath("$.roles[0].scopes").isArray())
-                .andExpect(jsonPath("$.roles[0].scopes[0].scopeId").value(1L))
-                .andExpect(jsonPath("$.roles[0].scopes[0].objectType").value("orgunit"))
-                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits").isArray())
-                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].name").value("OrgUnit1"))
-                .andExpect(jsonPath("$.roles[0].scopes[0].orgUnits.[0].orgUnitId").value("198"));
+                .andExpect(jsonPath("$.roles[0].roleName").value("Applikasjonstilgangsadministrator"));
     }
 
     @Test

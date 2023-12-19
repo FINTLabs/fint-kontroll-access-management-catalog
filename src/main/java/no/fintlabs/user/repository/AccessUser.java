@@ -39,19 +39,7 @@ public class AccessUser {
 
     @Builder.Default
     @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
-    private List<AccessUserOrgUnit> accessUserOrgUnits = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "accessUser", fetch = FetchType.LAZY)
     private List<AccessAssignment> accessAssignments = new ArrayList<>();
-
-    public void addAccessAssignment(AccessAssignment accessAssignment) {
-        if (accessAssignments == null) {
-            accessAssignments = new ArrayList<>();
-        }
-
-        accessAssignments.add(accessAssignment);
-    }
 
     @Override
     public String toString() {
