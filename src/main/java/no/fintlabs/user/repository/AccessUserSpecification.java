@@ -4,6 +4,8 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import no.fintlabs.accessassignment.repository.AccessAssignment;
+import no.fintlabs.orgunit.repository.OrgUnit;
+import no.fintlabs.scope.repository.Scope;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -12,16 +14,20 @@ public class AccessUserSpecification {
 
     public static Specification<AccessUser> hasOrganisationUnitIds(List<String> orgUnitIds) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            // Join the AccessUserOrgUnitDto entity
-            Join<AccessUser, AccessUserOrgUnit> orgUnitJoin = root.join("accessUserOrgUnits");
+            // Join AccessUser to AccessAssignment
+            Join<AccessUser, AccessAssignment> assignmentJoin = root.join("accessAssignments");
 
-            // Use the orgUnit association from AccessUserOrgUnitDto to get the actual orgUnitId
-            Path<String> orgUnitIdPath = orgUnitJoin.get("orgUnit").get("orgUnitId");
+            // Join AccessAssignment to Scope
+            Join<AccessAssignment, Scope> scopeJoin = assignmentJoin.join("scopes");
+
+            // Join Scope to OrgUnit
+            Join<Scope, OrgUnit> orgUnitJoin = scopeJoin.join("orgUnits");
 
             // Construct the 'in' clause for the search
-            return orgUnitIdPath.in(orgUnitIds);
+            return orgUnitJoin.get("orgUnitId").in(orgUnitIds);
         };
     }
+
 
     public static Specification<AccessUser> nameContains(String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {

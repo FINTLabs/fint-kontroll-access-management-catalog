@@ -1,15 +1,11 @@
 package no.fintlabs.user;
 
 import no.fintlabs.accessrole.AccessRole;
-import no.fintlabs.orgunit.OrgUnitDto;
-import no.fintlabs.orgunit.repository.OrgUnit;
 import no.fintlabs.orgunit.repository.OrgUnitInfo;
-import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.dto.AccessUserAccessRolesDto;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserOrgUnitDto;
 import no.fintlabs.user.dto.AccessUserOrgUnitsResponseDto;
-import no.fintlabs.user.dto.AccessUserScopesDto;
 import no.fintlabs.user.dto.UserRoleDto;
 import no.fintlabs.user.repository.AccessUser;
 import org.junit.jupiter.api.Test;
@@ -56,7 +52,6 @@ class AccessUserMapperTest {
         AccessUserDto result = AccessUserMapper.toAccessUserDto(accessUser);
 
         assertThat(result.resourceId()).isEqualTo(accessUser.getResourceId());
-        assertThat(result.userId()).isEqualTo(accessUser.getUserId());
         assertThat(result.userName()).isEqualTo(accessUser.getUserName());
         assertThat(result.firstName()).isEqualTo(accessUser.getFirstName());
         assertThat(result.lastName()).isEqualTo(accessUser.getLastName());
@@ -67,27 +62,27 @@ class AccessUserMapperTest {
 
         assertThat(actualUserRole.roleId()).isEqualTo(expectedUserRole.getAccessRoleId());
         assertThat(actualUserRole.roleName()).isEqualTo(expectedUserRole.getName());
-        assertFalse(actualUserRole.scopes().isEmpty(), "Scopes should not be empty");
+//        assertFalse(actualUserRole.scopes().isEmpty(), "Scopes should not be empty");
 
-        AccessUserScopesDto actualUserScope = actualUserRole.scopes().get(0);
-        Scope expectedUserScope = accessUser.getAccessAssignments().get(0).getScopes().get(0);
+//        AccessUserScopesDto actualUserScope = actualUserRole.scopes().get(0);
+//        Scope expectedUserScope = accessUser.getAccessAssignments().get(0).getScopes().get(0);
 
-        assertThat(actualUserScope.scopeId()).isEqualTo(expectedUserScope.getId());
-        assertThat(actualUserScope.objectType()).isEqualTo(expectedUserScope.getObjectType());
-        assertFalse(actualUserScope.orgUnits().isEmpty(), "OrgUnits should not be empty");
+//        assertThat(actualUserScope.scopeId()).isEqualTo(expectedUserScope.getId());
+//        assertThat(actualUserScope.objectType()).isEqualTo(expectedUserScope.getObjectType());
+//        assertFalse(actualUserScope.orgUnits().isEmpty(), "OrgUnits should not be empty");
 
-        OrgUnitDto actualOrgUnit = actualUserScope.orgUnits().get(0);
-        OrgUnit expectedOrgUnit = expectedUserScope.getOrgUnits().get(0);
+//        OrgUnitDto actualOrgUnit = actualUserScope.orgUnits().get(0);
+//        OrgUnit expectedOrgUnit = expectedUserScope.getOrgUnits().get(0);
 
-        assertThat(actualOrgUnit.orgUnitId()).isEqualTo(expectedOrgUnit.getOrgUnitId());
-        assertThat(actualOrgUnit.name()).isEqualTo(expectedOrgUnit.getName());
+//        assertThat(actualOrgUnit.orgUnitId()).isEqualTo(expectedOrgUnit.getOrgUnitId());
+//        assertThat(actualOrgUnit.name()).isEqualTo(expectedOrgUnit.getName());
     }
 
     @Test
     void shouldMapOrgUnitInfoToAccessUserOrgUnitDto() {
         List<OrgUnitInfo> orgUnitInfoList = new ArrayList<>();
-        orgUnitInfoList.add(new OrgUnitInfo("aa", 1L, "orgunit", "name1", "orgunitid1"));
-        orgUnitInfoList.add(new OrgUnitInfo("aa", 2L, "orgunit", "name2", "orgunitid2"));
+        orgUnitInfoList.add(new OrgUnitInfo("aa", "applikasjonsadministrator", 1L, "orgunit", "name1", "orgunitid1"));
+        orgUnitInfoList.add(new OrgUnitInfo("aa", "applikasjonsadministrator", 2L, "orgunit", "name2", "orgunitid2"));
 
         Page<OrgUnitInfo> orgUnits = new PageImpl<>(orgUnitInfoList);
 
@@ -102,6 +97,7 @@ class AccessUserMapperTest {
 
         AccessUserAccessRolesDto firstAccessRole = accessRoles.get(0);
         assertThat(firstAccessRole.getAccessRoleId()).isEqualTo("aa");
+        assertThat(firstAccessRole.getAccessRoleName()).isEqualTo("applikasjonsadministrator");
         assertThat(firstAccessRole.getOrgUnits()).hasSize(2);
 
         AccessUserOrgUnitDto firstOrgUnit = firstAccessRole.getOrgUnits().get(0);

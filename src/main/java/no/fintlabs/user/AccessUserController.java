@@ -88,24 +88,10 @@ public class AccessUserController {
         log.info("Fetching orgunits for user with resourceId {}", resourceId);
 
         try {
-            long startTime = System.currentTimeMillis();
-
             Page<OrgUnitInfo> orgUnits =
                     orgUnitRepository.findOrgUnitsForUserByFilters(resourceId, accessRoleId, objectType, orgUnitName, pageable);
 
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-
-            log.info("Execution time of findFilteredOrgUnits: " + duration + " milliseconds");
-
-            startTime = System.currentTimeMillis();
-
             AccessUserOrgUnitsResponseDto mappedOrgUnits = AccessUserMapper.toAccessUserOrgUnitDto(orgUnits);
-
-            endTime = System.currentTimeMillis();
-            duration = endTime - startTime;
-
-            log.info("Execution time of mapOrgUnitsResponse2: " + duration + " milliseconds");
 
             return ResponseEntity.ok(mappedOrgUnits);
         } catch (Exception e) {

@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrgUnitInfo {
     private String accessRoleId;
+    private String accessRoleName;
     private Long scopeId;
     private String objectType;
     private String name;

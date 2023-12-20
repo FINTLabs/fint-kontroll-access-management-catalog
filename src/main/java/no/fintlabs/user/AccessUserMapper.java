@@ -1,14 +1,12 @@
 package no.fintlabs.user;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
-import no.fintlabs.orgunit.OrgUnitDto;
-import no.fintlabs.orgunit.OrgUnitMapper;
 import no.fintlabs.orgunit.repository.OrgUnitInfo;
+import no.fintlabs.user.dto.AccessRoleKey;
 import no.fintlabs.user.dto.AccessUserAccessRolesDto;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserOrgUnitDto;
 import no.fintlabs.user.dto.AccessUserOrgUnitsResponseDto;
-import no.fintlabs.user.dto.AccessUserScopesDto;
 import no.fintlabs.user.dto.UserRoleDto;
 import no.fintlabs.user.repository.AccessUser;
 import org.springframework.data.domain.Page;
@@ -29,11 +27,10 @@ public class AccessUserMapper {
             final String roleId = accessAssignment.getAccessRole().getAccessRoleId();
             final String roleName = accessAssignment.getAccessRole().getName();
 
-            UserRoleDto roleScopesDto = roles.computeIfAbsent(roleId, k -> createRoleScopesDto(roleId, roleName));
-            roleScopesDto.scopes().addAll(mapAssignment(accessAssignment));
+            roles.computeIfAbsent(roleId, k -> createRoleScopesDto(roleId, roleName));
         }
 
-        return new AccessUserDto(accessUser.getResourceId(), accessUser.getUserId(), accessUser.getUserName(), accessUser.getFirstName(),
+        return new AccessUserDto(accessUser.getResourceId(), accessUser.getUserName(), accessUser.getFirstName(),
                                  accessUser.getLastName(), new ArrayList<>(roles.values()));
     }
 
@@ -51,34 +48,21 @@ public class AccessUserMapper {
     }
 
     public static AccessUserOrgUnitsResponseDto toAccessUserOrgUnitDto(Page<OrgUnitInfo> orgUnits) {
-        Map<String, List<AccessUserOrgUnitDto>> groupedByAccessRoleId = orgUnits.getContent().stream()
+        Map<AccessRoleKey, List<AccessUserOrgUnitDto>> groupedByAccessRoleId = orgUnits.getContent().stream()
                 .collect(Collectors.groupingBy(
-                        OrgUnitInfo::getAccessRoleId,
+                        orgUnitInfo -> new AccessRoleKey(orgUnitInfo.getAccessRoleId(), orgUnitInfo.getAccessRoleName()),
                         Collectors.mapping(AccessUserMapper::createOrgUnitData, Collectors.toList())
                 ));
 
         List<AccessUserAccessRolesDto> groupedResponse = new ArrayList<>();
-        groupedByAccessRoleId.forEach((key, value) -> groupedResponse.add(new AccessUserAccessRolesDto(key, value)));
+        groupedByAccessRoleId.forEach((key, value) -> groupedResponse.add(new AccessUserAccessRolesDto(key.accessRoleId(),
+                                                                                                       key.accessRoleName(), value)));
 
         return new AccessUserOrgUnitsResponseDto(orgUnits.getTotalElements(), orgUnits.getTotalPages(), orgUnits.getNumber(), groupedResponse);
     }
 
     private static UserRoleDto createRoleScopesDto(String roleId, String roleName) {
-        return new UserRoleDto(roleId, roleName, new ArrayList<>());
-    }
-
-    private static List<AccessUserScopesDto> mapAssignment(AccessAssignment accessAssignment) {
-        List<AccessUserScopesDto> accessUserScopesDtos = new ArrayList<>();
-
-        accessAssignment.getScopes().forEach(scope -> {
-            List<OrgUnitDto> orgUnits = OrgUnitMapper.toDto(scope.getOrgUnits());
-
-            AccessUserScopesDto accessUserScopesDto = new AccessUserScopesDto(scope.getId(), scope.getObjectType(), orgUnits);
-            accessUserScopesDtos.add(accessUserScopesDto);
-
-        });
-
-        return accessUserScopesDtos;
+        return new UserRoleDto(roleId, roleName);
     }
 
     private static AccessUserOrgUnitDto createOrgUnitData(OrgUnitInfo orgUnitInfo) {

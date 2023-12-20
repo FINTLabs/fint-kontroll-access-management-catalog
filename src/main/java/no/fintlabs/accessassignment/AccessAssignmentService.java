@@ -153,4 +153,10 @@ public class AccessAssignmentService {
             accessAssignmentRepository.deleteScopesByScopeIds(scopeIds);
         }
     }
+
+    public List<String> getObjectTypes() {
+        return ScopeObjectTypes.getObjectTypesExcludingAll().stream()
+                .map(ScopeObjectTypes::getObjectTypeName)
+                .collect(Collectors.toList());
+    }
 }
