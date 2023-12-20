@@ -148,7 +148,7 @@ public class AccessUserControllerTest {
     @Test
     public void shouldGetOrgUnitsForUser() throws Exception {
         when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
-                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1", "198"))));
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", "applikasjonstilgangsadministrator", 1L, "orgunit", "name1", "198"))));
 
         mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits"))
                 .andExpect(status().isOk())
@@ -157,6 +157,7 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.currentPage").value("0"))
                 .andExpect(jsonPath("$.accessRoles").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].accessRoleId").value("ata"))
+                .andExpect(jsonPath("$.accessRoles[0].accessRoleName").value("applikasjonstilgangsadministrator"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))
@@ -167,7 +168,7 @@ public class AccessUserControllerTest {
     @Test
     public void shouldGetOrgUnitsForUserWithFilters() throws Exception {
         when(orgUnitRepositoryMock.findOrgUnitsForUserByFilters(any(), any(), any(), any(), any())).thenReturn(
-                new PageImpl<>(List.of(new OrgUnitInfo("ata", 1L, "orgunit", "name1", "198"))));
+                new PageImpl<>(List.of(new OrgUnitInfo("ata", "applikasjonstilgangsadministrator", 1L, "orgunit", "name1", "198"))));
 
         mockMvc.perform(get("/api/accessmanagement/v1/user/1/orgunits")
                                 .param("accessroleid", "ata")
@@ -179,6 +180,7 @@ public class AccessUserControllerTest {
                 .andExpect(jsonPath("$.currentPage").value("0"))
                 .andExpect(jsonPath("$.accessRoles").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].accessRoleId").value("ata"))
+                .andExpect(jsonPath("$.accessRoles[0].accessRoleName").value("applikasjonstilgangsadministrator"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits").isArray())
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].name").value("name1"))
                 .andExpect(jsonPath("$.accessRoles[0].orgUnits[0].objectType").value("orgunit"))

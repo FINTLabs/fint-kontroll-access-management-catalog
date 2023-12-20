@@ -2,6 +2,7 @@ package no.fintlabs.user;
 
 import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.orgunit.repository.OrgUnitInfo;
+import no.fintlabs.user.dto.AccessRoleKey;
 import no.fintlabs.user.dto.AccessUserAccessRolesDto;
 import no.fintlabs.user.dto.AccessUserDto;
 import no.fintlabs.user.dto.AccessUserOrgUnitDto;
@@ -47,14 +48,15 @@ public class AccessUserMapper {
     }
 
     public static AccessUserOrgUnitsResponseDto toAccessUserOrgUnitDto(Page<OrgUnitInfo> orgUnits) {
-        Map<String, List<AccessUserOrgUnitDto>> groupedByAccessRoleId = orgUnits.getContent().stream()
+        Map<AccessRoleKey, List<AccessUserOrgUnitDto>> groupedByAccessRoleId = orgUnits.getContent().stream()
                 .collect(Collectors.groupingBy(
-                        OrgUnitInfo::getAccessRoleId,
+                        orgUnitInfo -> new AccessRoleKey(orgUnitInfo.getAccessRoleId(), orgUnitInfo.getAccessRoleName()),
                         Collectors.mapping(AccessUserMapper::createOrgUnitData, Collectors.toList())
                 ));
 
         List<AccessUserAccessRolesDto> groupedResponse = new ArrayList<>();
-        groupedByAccessRoleId.forEach((key, value) -> groupedResponse.add(new AccessUserAccessRolesDto(key, value)));
+        groupedByAccessRoleId.forEach((key, value) -> groupedResponse.add(new AccessUserAccessRolesDto(key.accessRoleId(),
+                                                                                                       key.accessRoleName(), value)));
 
         return new AccessUserOrgUnitsResponseDto(orgUnits.getTotalElements(), orgUnits.getTotalPages(), orgUnits.getNumber(), groupedResponse);
     }

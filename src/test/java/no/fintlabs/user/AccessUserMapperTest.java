@@ -81,8 +81,8 @@ class AccessUserMapperTest {
     @Test
     void shouldMapOrgUnitInfoToAccessUserOrgUnitDto() {
         List<OrgUnitInfo> orgUnitInfoList = new ArrayList<>();
-        orgUnitInfoList.add(new OrgUnitInfo("aa", 1L, "orgunit", "name1", "orgunitid1"));
-        orgUnitInfoList.add(new OrgUnitInfo("aa", 2L, "orgunit", "name2", "orgunitid2"));
+        orgUnitInfoList.add(new OrgUnitInfo("aa", "applikasjonsadministrator", 1L, "orgunit", "name1", "orgunitid1"));
+        orgUnitInfoList.add(new OrgUnitInfo("aa", "applikasjonsadministrator", 2L, "orgunit", "name2", "orgunitid2"));
 
         Page<OrgUnitInfo> orgUnits = new PageImpl<>(orgUnitInfoList);
 
@@ -97,6 +97,7 @@ class AccessUserMapperTest {
 
         AccessUserAccessRolesDto firstAccessRole = accessRoles.get(0);
         assertThat(firstAccessRole.getAccessRoleId()).isEqualTo("aa");
+        assertThat(firstAccessRole.getAccessRoleName()).isEqualTo("applikasjonsadministrator");
         assertThat(firstAccessRole.getOrgUnits()).hasSize(2);
 
         AccessUserOrgUnitDto firstOrgUnit = firstAccessRole.getOrgUnits().get(0);

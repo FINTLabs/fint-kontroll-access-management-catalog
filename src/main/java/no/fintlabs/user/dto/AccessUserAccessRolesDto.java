@@ -12,5 +12,6 @@ import java.util.List;
 public class AccessUserAccessRolesDto {
 
     private String accessRoleId;
+    private String accessRoleName;
     private List<AccessUserOrgUnitDto> orgUnits;
 }
