@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +36,9 @@ public class OpaController {
     @Operation(summary = "Hent OPA bundle", description = "Hent OPA bundle")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(produces = "application/gzip")
-    public ResponseEntity<Resource> getOpaBundle(HttpServletRequest request) throws Exception {
+    public ResponseEntity<Resource> getOpaBundle(@RequestHeader("X-API-KEY") String apiKey) throws Exception {
         log.info("THE BASE URL IS: {}, apiKey is: {}", baseUrl, apiKey);
+        log.info("Bearer token from opa: {}", apiKey);
         // TODO: Enable
         /*if (!isValidApiKey(request)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
