@@ -37,9 +37,8 @@ public class OpaController {
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(produces = "application/gzip")
     public ResponseEntity<Resource> getOpaBundle(@RequestHeader("X-API-KEY") String apiKeyFromOpa) throws Exception {
-        log.info("Check this key with opa key: {} - {}", apiKey, apiKeyFromOpa);
-
         if (!isValidApiKey(apiKeyFromOpa)) {
+            log.error("Invalid API key between OPA and FINT Access Management");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
