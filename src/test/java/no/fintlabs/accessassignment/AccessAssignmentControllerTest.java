@@ -60,6 +60,20 @@ public class AccessAssignmentControllerTest {
     }
 
     @Test
+    public void shouldGetUsersAssignedObjectTypes() throws Exception {
+        AccessUser user = AccessUserMother.createAccessUserWithAssignmentsAndScopes("1234", "username1");
+        user.getAccessAssignments().get(0).getAccessUser().setResourceId("1234");
+
+        when(accessUserRepositoryMock.findByResourceId("1234")).thenReturn(user);
+
+        mockMvc.perform(get("/api/accessmanagement/v1/accessassignment/user/{resourceId}/objecttypes", "1234"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0]").value("orgunit"))
+                .andExpect(jsonPath("$[1]").value("user"));
+    }
+
+    @Test
     public void shouldDeleteAccessAssignmentByRoleAndObjectType() throws Exception {
         AccessUser user = AccessUserMother.createDefaultAccessUser();
         AccessRole role = AccessRoleMother.createDefaultAccessRole();

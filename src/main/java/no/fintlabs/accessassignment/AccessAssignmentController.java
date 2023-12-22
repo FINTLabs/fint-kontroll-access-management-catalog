@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.accessassignment.repository.AccessAssignment;
 import no.fintlabs.accessrole.AccessRole;
 import no.fintlabs.accessrole.AccessRoleRepository;
+import no.fintlabs.scope.repository.Scope;
 import no.fintlabs.user.repository.AccessUser;
 import no.fintlabs.user.repository.AccessUserRepository;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ public class AccessAssignmentController {
     }
 
     @GetMapping("/objecttypes")
+    @ResponseBody
     public ResponseEntity<List<String>> getObjectTypes() {
         log.info("Fetching all objecttypes");
 
@@ -57,6 +59,22 @@ public class AccessAssignmentController {
         }
     }
 
+    @GetMapping("/user/{resourceId}/objecttypes")
+    @ResponseBody
+    public ResponseEntity<List<String>> getUserObjectTypes(@PathVariable(name = "resourceId") String resourceId) {
+        log.info("Fetching all objecttypes for user");
+
+        try {
+            AccessUser accessUser = accessUserRepository.findByResourceId(resourceId);
+            List<String> userObjectTypes = accessUser.getAccessAssignments().stream().map(AccessAssignment::getScopes).flatMap(List::stream)
+                    .map(Scope::getObjectType).distinct().toList();
+            return ResponseEntity.ok(userObjectTypes);
+
+        } catch (Exception e) {
+            log.error("Error getting all objecttypes for user", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong when getting objecttypes for user");
+        }
+    }
 
     @GetMapping("/user/{resourceId}")
     @ResponseBody
@@ -138,8 +156,8 @@ public class AccessAssignmentController {
     @DeleteMapping("/user/{resourceId}/role/{roleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccessAssignmentByRoleAndObjectType(@PathVariable(name = "resourceId") String resourceId,
-                                             @PathVariable(name = "roleId") String roleId,
-                                             @RequestParam(name = "objectType", required = false) String objectType) {
+                                                          @PathVariable(name = "roleId") String roleId,
+                                                          @RequestParam(name = "objectType", required = false) String objectType) {
 
         log.info("Deleting accessassignment for user {} with role {}, objecttype {}", resourceId, roleId, objectType);
 
@@ -148,7 +166,7 @@ public class AccessAssignmentController {
             AccessRole accessRole = accessRoleRepository.findById(roleId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role does not exist"));
 
-            if(objectType == null || objectType.equalsIgnoreCase("all")) {
+            if (objectType == null || objectType.equalsIgnoreCase("all")) {
                 accessAssignmentService.deleteAllAssignmentsByResourceIdAndRole(accessUser, accessRole);
             } else {
                 accessAssignmentService.deleteAllAssignmentsByResourceIdAndRoleAndObjectType(accessUser, accessRole, objectType);

@@ -29,6 +29,15 @@ public class AccessAssignmentMother {
                 .build();
     }
 
+    public static AccessAssignment createAccessAssignmentWithScopes(AccessUser accessUser, List<Scope> scopes, AccessRole accessRole) {
+        return AccessAssignment.builder()
+                .id(999L)
+                .accessUser(accessUser)
+                .scopes(scopes)
+                .accessRole(accessRole)
+                .build();
+    }
+
     private static AccessUser createAccessUser() {
         return AccessUser.builder()
                 .resourceId("123")
