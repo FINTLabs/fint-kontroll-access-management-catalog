@@ -40,6 +40,11 @@ spring:
       group-id: testGroup
       bootstrap-servers: localhost:9092
 
-  opa:
-    jsonexport:
-      filename: data.json
+opa:
+  jsonexport:
+    filename: data.json
+
+fint:
+  kontroll:
+    opa:
+      api-key: 'dummykey'

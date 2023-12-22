@@ -1,13 +1,12 @@
 package no.fintlabs.opa;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,12 +21,8 @@ class OpaControllerTest {
     @MockBean
     private OpaBundleService opaBundleService;
 
-    @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new OpaController(opaBundleService)).build();
-    }
-
     @Test
+    @WithMockUser("dummyuser")
     public void shouldGetOkForOpaBundle() throws Exception {
         Resource urlResource = mock(Resource.class);
 
@@ -37,11 +32,13 @@ class OpaControllerTest {
         when(opaBundleService.getOpaBundleFile()).thenReturn(urlResource);
 
         mockMvc.perform(get("/api/accessmanagement/v1/opabundle")
+                                .header("X-API-KEY", "dummykey")
                                 .accept("application/gzip"))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser("dummyuser")
     public void shouldGet404IfNotFound() throws Exception {
         Resource urlResource = mock(Resource.class);
 
@@ -49,6 +46,7 @@ class OpaControllerTest {
         when(opaBundleService.getOpaBundleFile()).thenReturn(urlResource);
 
         mockMvc.perform(get("/api/accessmanagement/v1/opabundle")
+                                .header("X-API-KEY", "dummykey")
                                 .accept("application/gzip"))
                 .andExpect(status().isNotFound());
     }

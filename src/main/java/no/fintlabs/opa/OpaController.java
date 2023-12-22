@@ -26,9 +26,6 @@ public class OpaController {
     @Value("${fint.kontroll.opa.api-key:dummykey}")
     private String apiKey;
 
-    @Value("${fint.relations.default-base-url:localhost}")
-    private String baseUrl;
-
     public OpaController(OpaBundleService opaBundleService) {
         this.opaBundleService = opaBundleService;
     }
@@ -66,5 +63,7 @@ public class OpaController {
         return apiKey.equals(apiKeyFromOpa);
     }
 
-
+    void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 }
